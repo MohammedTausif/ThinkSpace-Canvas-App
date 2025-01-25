@@ -1,12 +1,62 @@
-import {WebSocketServer } from 'ws'
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import {WebSocketServer, WebSocket } from 'ws'
+import {JWT_SECRET} from '@repo/backend-common/config'
+import { json } from 'stream/consumers'
 
 const wss = new WebSocketServer({port: 8080})
 
-wss.on('connection',function connection(ws){
-    ws.on('error', console.error)
+interface User {
+    ws: WebSocket,
+    userId : string,
+    rooms : string[]
+}
+//Storing users for state management
+let users: User[] = [];  
 
-    ws.on('message', function message(data){
-        console.log('received: %s', data);;
+function checkUser(token : string): string | null {
+   const decoded = jwt.verify(token, JWT_SECRET)
+   if(typeof decoded == "string"){
+    return null
+   }
+   if(!decoded || !decoded.userId){
+    return null
+   }
+
+   return decoded?.userId;
+}
+wss.on('connection', function connection(ws, request){
+    const url = request.url;
+    if(!url){
+        return;
+    }
+    const queryParams =new URLSearchParams(url.split('?')[1])
+    const token = queryParams.get('token') || "";
+    const userId = checkUser(token)
+
+    if(userId == null){
+        ws.close();
+        return null;
+    }
+    //pushing users info in users table
+    users.push({
+        userId,
+        rooms: [],
+        ws
     })
-    ws.send('something')
-} );
+
+     ws.on('message', async function message(data){
+        let parsedData;
+        if(typeof data !== "string"){
+            parsedData = JSON.parse(data.toString())
+        }
+        else{
+            parsedData = JSON.parse(data)
+        }
+        if (parsedData.type === "join_room"){
+            const user = users.find(x=> x.ws == ws);
+            user?.rooms.push(parsedData.roomId);
+        }
+    })
+
+
+})
