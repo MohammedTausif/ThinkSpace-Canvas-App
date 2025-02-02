@@ -29,6 +29,7 @@ const LandingPage=()=> {
                     </div>
                 </div>
                 <div className="for button">
+                    Get started 
 
                 </div>
             </div>
