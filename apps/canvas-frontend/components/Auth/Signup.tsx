@@ -3,21 +3,30 @@ import { Button } from '../ui/Button'
 import { useRef, useState } from 'react'
 import {motion} from 'framer-motion'
 import { Input } from '../ui/Input'
+import { useRouter } from 'next/navigation'
 
 const emailDomains = [
     'gmail.com',
     'outlook.com'
 ]
 
-const Signin = ()=>{
+const Signup = ()=>{
+    const router = useRouter()
      const [isPasswordVisible, setIsPasswordVisible] = useState(false)
         const usernameRef = useRef<HTMLInputElement>(null)
         const passwordRef = useRef<HTMLInputElement>(null);
     
         function HandlePasswordVisibility(){
-            setIsPasswordVisible((prevState)=>!prevState)
-    
+            setIsPasswordVisible(x=>!x)
         }
+
+        async function handleSignup(){
+
+            router.push('/signin')
+
+        }
+
+
     return(
         <section className='p-4 wrapper relative min-h-screen flex items-center justify-center overflow-hidden antialiased'>
         <motion.div
@@ -39,13 +48,23 @@ const Signin = ()=>{
                     </span>
                 </h2>
                 <p className='text-lg font-medium tracking-tighter text-gray-900/75'>
-                    Log in to share the content!
+                    Register to access a virtual workspace!
                 </p>
             </div>
             <div className='flex flex-col gap-8'>
                 <div className='grid w-full items-center gap-4 '>
                     <div className='relative flex flex-col gap-2'>
-                        <label className='text-sm' htmlFor="email">Email</label>
+                    <label className='text-sm font-black' htmlFor="email">First Name</label>
+                        <Input
+                            className='focus:ring-none border-none bg-gray-500/10 focus:outline-none h-10 px-2 rounded-md'
+                            name="email"
+                            type={'text'}
+                            id="email"
+                            placeholder='John'
+                            ref={usernameRef}
+                            // value={usernameRef?.current}
+                        />
+                        <label className='text-sm font-black' htmlFor="email">Email</label>
                         <Input
                             className='focus:ring-none border-none bg-gray-500/10 focus:outline-none h-10 px-2 rounded-md'
                             name="email"
@@ -58,7 +77,7 @@ const Signin = ()=>{
                     </div>
                     <div className='relative flex flex-col gap-2 '>
                         <div className='flex flex-col  '>
-                        <label className='text-sm' htmlFor="password">Password</label>
+                        <label className='text-sm font-black' htmlFor="password">Password</label>
                             <Input
                                 className='focus:ring-none focus:outline-none border-none bg-gray-500/10  h-10 px-2 rounded-md'
                                 name='password'
@@ -66,11 +85,11 @@ const Signin = ()=>{
                                 type={isPasswordVisible ? 'text' :'password'}
                                 placeholder='••••••••'
                                 ref={passwordRef}
-                                // onKeyDown={async (e) => {
-                                //     if (e.key === 'Enter') {
-                                //         // handleSignin()
-                                //     }
-                                // }}
+                                onKeyDown={async (e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSignup()
+                                    }
+                                }}
                             />
                             <button
                             className='absolute bottom-0 right-0 flex h-10 items-center px-4 text-neutral-500'
@@ -119,10 +138,10 @@ const Signin = ()=>{
                 </div>
 
                 <Button
+                title='Register'
                 className='text-sm'
-                 title='Login'
-                 
-                 />
+                onClick={handleSignup}
+                />
               </div> 
         </motion.div>
         <div className='absolute -bottom-[16rem] -z-[20] size-[24rem] overflow-hidden rounded-full bg-gradient-to-t from-blue-400 to-blue-700 blur-[16rem] text-red-700 '/>
@@ -130,4 +149,4 @@ const Signin = ()=>{
        
     )
 }
-export {Signin}
+export default Signup

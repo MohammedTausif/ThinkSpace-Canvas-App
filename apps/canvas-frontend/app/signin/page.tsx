@@ -1,6 +1,6 @@
 import {Signin}  from "@/components/Auth/Signin"
 
-const SigninPage = async () => {
+const SigninPage =  () => {
     return <Signin/>;
 }
 
