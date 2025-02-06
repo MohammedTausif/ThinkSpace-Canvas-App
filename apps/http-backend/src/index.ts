@@ -8,8 +8,8 @@ app.use(express.json())
 // app.use(cors())
 
 app.use('/api/v1/user', UserRoutes)
-app.use('/api/v1/chats', ChatRoutes)
 app.use('/api/v1',  RoomRoutes)
+app.use('/api/v1/chats', ChatRoutes)
 
 app.listen(4000, ()=>{
     console.log(`http server listening at port: 4000`)

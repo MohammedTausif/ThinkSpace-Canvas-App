@@ -6,7 +6,9 @@ import { JWT_SECRET } from "@repo/backend-common/config"
 import  Jwt  from "jsonwebtoken"
 
 export const signup = async(req: Request, res:Response)=>{
+    
     const ParsedData=  SignupUserSchema.safeParse(req.body)
+
     const Password = ParsedData.data?.password || "" ;
     const HashedPassword = await bcrypt.hash(Password, 9)
     if(!ParsedData.success){

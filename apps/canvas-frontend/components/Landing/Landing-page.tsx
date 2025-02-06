@@ -21,9 +21,10 @@ const LandingPage=()=> {
                     <div className="text-2xl md:text-5xl lg:text-5xl bg-gradient-to-t from-gray-300 to-black  bg-clip-text font-black text-transparent  relative top-20 flex justify-center items-center">
                         Welcome to Collaborative, {'  '} 
                         <span>{' '} </span>
-                       <div className="bg-gray-50 shadow-sm rounded "> <span className="md:text-6xl text-3xl  bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text font-black text-transparent cursor-pointer">
+                       <div className="bg-gray-50 shadow-sm rounded "> 
+                        <h1 className="md:text-6xl text-3xl  bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text font-black text-transparent cursor-pointer transition-transform duration-500 hover:animate-bounce">
                            {' '}  WhiteBoard!
-                        </span>
+                        </h1>
                         </div>
                         
                     </div>

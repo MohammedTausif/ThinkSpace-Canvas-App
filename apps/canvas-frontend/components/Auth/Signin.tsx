@@ -34,7 +34,7 @@ const Signin = ()=>{
             <div className='flex flex-col text-center '>
                 <h2 className=' text-3xl font-semibold tracking-tighter xl:text-3xl '>
                     Welcome to {' '}
-                    <span className='bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text pr-1 font-black tracking-tighter text-transparent'>
+                    <span className='bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text pr-1 font-black tracking-tighter text-transparent '>
                         CollabxCanvas
                     </span>
                 </h2>
