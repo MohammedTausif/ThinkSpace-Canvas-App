@@ -1,5 +1,5 @@
 "use client"
-import { Button } from '../ui/Button'
+import { Button } from '../ui/AuthButton'
 import { useRef, useState } from 'react'
 import {motion} from 'framer-motion'
 import { Input } from '../ui/Input'
@@ -20,7 +20,7 @@ const Signup = ()=>{
             setIsPasswordVisible(x=>!x)
         }
 
-        async function handleSignup(){
+         const handleSignup=async()=>{
 
             router.push('/signin')
 

@@ -1,5 +1,5 @@
 "use client"
-import { Button } from '../ui/Button'
+import { Button } from '../ui/AuthButton'
 import { useRef, useState } from 'react'
 import {motion} from 'framer-motion'
 import { Input } from '../ui/Input'
@@ -119,13 +119,13 @@ const Signin = ()=>{
                 </div>
 
                 <Button
-                className='text-sm'
-                 title='Login'
+                className='text-[16px]'
+                 title='Signin'
                  
                  />
               </div> 
         </motion.div>
-        <div className='absolute -bottom-[16rem] -z-[20] size-[24rem] overflow-hidden rounded-full bg-gradient-to-t from-blue-400 to-blue-700 blur-[16rem] text-red-700 '/>
+        <div className=' absolute -bottom-[16rem] -z-[20] size-[24rem] overflow-hidden rounded-full bg-gradient-to-t from-blue-400 to-blue-700 blur-[16rem] text-red-700 '/>
     </section>
        
     )
