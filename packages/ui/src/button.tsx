@@ -13,6 +13,7 @@ interface ButtonProps{
 const variantStyles = {
   variants: {
     primary : {
+      "bg": ""
 
     }
   }
