@@ -3,6 +3,7 @@ import { Button } from '../ui/AuthButton'
 import { useRef, useState } from 'react'
 import {motion} from 'framer-motion'
 import { Input } from '../ui/Input'
+import { useRouter } from 'next/navigation'
 
 const emailDomains = [
     'gmail.com',
@@ -10,14 +11,22 @@ const emailDomains = [
 ]
 
 const Signin = ()=>{
-     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+        const router = useRouter();
+        const [isPasswordVisible, setIsPasswordVisible] = useState(false)
         const usernameRef = useRef<HTMLInputElement>(null)
         const passwordRef = useRef<HTMLInputElement>(null);
     
         function HandlePasswordVisibility(){
             setIsPasswordVisible((prevState)=>!prevState)
-    
         }
+
+        function handleSignin(){
+
+
+           router.push(`/canvas/:roomId`)
+        }
+
+
     return(
         <section className='p-4 wrapper relative min-h-screen flex items-center justify-center overflow-hidden antialiased'>
         <motion.div
@@ -121,6 +130,7 @@ const Signin = ()=>{
                 <Button
                 className='text-[16px]'
                  title='Signin'
+                 onClick={handleSignin}
                  
                  />
               </div> 
