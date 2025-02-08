@@ -1,4 +1,5 @@
-import { Shapes } from "lucide-react";
+import axios from 'axios';
+import { HTTP_URL } from '@/config';
 
 type Shape = {
     type: "rect",
@@ -6,12 +7,35 @@ type Shape = {
     y: number,
     height: number,
     width: number
+} | {
+    type: "circle",
+    centerX: number,
+    centerY: number,
+    radius: number,
+} | {
+    type: "pencil",
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
 }
 
-export function initDraw(canvas: HTMLCanvasElement) {
+// to get all the existing shapes
+async function getExistingShapes(roomId:string) {
+    const res = await axios.get(`${HTTP_URL}/api/v1/chats/${roomId}`);
+    const messages = res.data.messages;
+    const shapes = messages.map((x: {message : string})=>{
+        const messageData = JSON.parse(x.message)
+        return messageData.shape;
+    })
+    return shapes;
+    
+}
 
-    let existingShapes: Shape[] = []
+//Logic for drawing Rectangle Shape
+export async function initDraw(canvas: HTMLCanvasElement, roomId:string) {
 
+    let existingShapes: Shape[] =await getExistingShapes(roomId)
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
@@ -35,15 +59,15 @@ export function initDraw(canvas: HTMLCanvasElement) {
     canvas.addEventListener("mouseup", (e) => {
         clicked = false;
         const width = e.clientX - startX;
-        const height = e.clientY -startY;
+        const height = e.clientY - startY;
         existingShapes.push({
             type: "rect",
-            x:startX,
-            y :startY,
+            x: startX,
+            y: startY,
             height,
             width
         })
-        
+
     })
 
     canvas.addEventListener("mousemove", (e) => {
@@ -60,6 +84,7 @@ export function initDraw(canvas: HTMLCanvasElement) {
 
 }
 
+// clearing canvas after drawing one rectangle => to allow access for drawing multiple rectangles
 function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "rgba(0,0,0)";
@@ -73,3 +98,4 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
     })
 
 }
+

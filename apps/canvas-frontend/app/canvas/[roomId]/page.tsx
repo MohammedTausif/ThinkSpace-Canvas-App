@@ -9,7 +9,7 @@ function Canvas() {
 
         if (canvasRef.current) {
             const canvas = canvasRef.current;
-            initDraw(canvas)
+            initDraw(canvas, "roomId")
         }
 
     }, [canvasRef])

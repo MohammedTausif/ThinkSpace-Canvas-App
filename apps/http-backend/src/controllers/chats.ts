@@ -17,7 +17,7 @@ export const getChats= async (req:Request, res:Response)=>{
         res.json({
             messages
         })
-
+        
     }catch(error){
         console.log(error)
         res.json({
