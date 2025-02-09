@@ -2,7 +2,7 @@
 import { Button } from '../ui/AuthButton'
 import { useRef, useState } from 'react'
 import {motion} from 'framer-motion'
-import { Input } from '../ui/Input'
+import {Input}  from '../ui/Input'
 import { useRouter } from 'next/navigation'
 
 const emailDomains = [
@@ -75,11 +75,11 @@ const Signin = ()=>{
                                 type={isPasswordVisible ? 'text' :'password'}
                                 placeholder='••••••••'
                                 ref={passwordRef}
-                                // onKeyDown={async (e) => {
-                                //     if (e.key === 'Enter') {
-                                //         // handleSignin()
-                                //     }
-                                // }}
+                                onKeyDown={async (e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSignin()
+                                    }
+                                }}
                             />
                             <button
                             className='absolute bottom-0 right-0 flex h-10 items-center px-4 text-neutral-500'

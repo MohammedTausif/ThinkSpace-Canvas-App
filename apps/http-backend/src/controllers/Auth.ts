@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs'
 import { JWT_SECRET } from "@repo/backend-common/config"
 import  Jwt  from "jsonwebtoken"
 
+
+//http:localhost:4000/api/v1/user/signup => POST
 export const signup = async(req: Request, res:Response)=>{
     
     const ParsedData=  SignupUserSchema.safeParse(req.body)
@@ -39,6 +41,8 @@ export const signup = async(req: Request, res:Response)=>{
     }
 }
 
+
+//http:localhost:4000/api/v1/user/signin => POST
 export const signin = async (req:Request, res:Response)=>{
     const parsedData = SigninUserSchema.safeParse(req.body)
 

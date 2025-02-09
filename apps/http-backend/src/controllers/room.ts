@@ -2,6 +2,7 @@ import { CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client";
 import { Request, Response } from "express";
 
+//http://localhost:4000/api/v1/room => POST (Req for Creating a Room)
 export const CreateRoom = async (req: Request, res: Response) => {
 
     const parsedData = CreateRoomSchema.safeParse(req.body)
@@ -29,6 +30,8 @@ export const CreateRoom = async (req: Request, res: Response) => {
     }
 
 }
+
+//http://localhost:4000/api/v1/room/:slug => GET (Req for accessing Rooms)
 
 export const GetRooms = async(req:Request, res:Response)=>{
     const slug = req.params.slug

@@ -20,22 +20,22 @@ type Shape = {
     endY: number,
 }
 
-// to get all the existing shapes
+// to get all the previous existing shapes
 async function getExistingShapes(roomId:string) {
-    const res = await axios.get(`${HTTP_URL}/api/v1/chats/${roomId}`);
-    const messages = res.data.messages;
-    const shapes = messages.map((x: {message : string})=>{
-        const messageData = JSON.parse(x.message)
-        return messageData.shape;
-    })
-    return shapes;
-    
+    // const res = await axios.get(`${HTTP_URL}/api/v1/chats/${roomId}`);
+    // const messages = res.data.messages;
+    // const shapes = messages.map((x: {message : string})=>{
+    //     const messageData = JSON.parse(x.message)
+    //     return messageData.shape;
+    // })
+    // return shapes;
+    return JSON.parse(roomId)
 }
 
 //Logic for drawing Rectangle Shape
 export async function initDraw(canvas: HTMLCanvasElement, roomId:string) {
 
-    let existingShapes: Shape[] =await getExistingShapes(roomId)
+    let existingShapes: Shape[] =[]
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
