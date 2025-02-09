@@ -33,15 +33,19 @@ export const CreateRoom = async (req: Request, res: Response) => {
 
 //http://localhost:4000/api/v1/room/:slug => GET (Req for accessing Rooms)
 
-export const GetRooms = async(req:Request, res:Response)=>{
+export const GetRooms = async (req: Request, res: Response) => {
     const slug = req.params.slug
-    const room = await prismaClient.room.findFirst({
-        where: {
-            slug
-        }
-    })
-    res.json({
-        room
-    })
+    try {
+        const room = await prismaClient.room.findFirst({
+            where: {
+                slug
+            }
+        })
+        res.json({
+            room
+        })
+    }catch(error){
+        console.error("Error Getting Rooms :", error)
+    }
 
 }
