@@ -6,7 +6,7 @@ import { Input } from '../ui/Input'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { HTTP_URL } from '@/config'
-import { SigninUserSchema } from '@repo/common/types'
+import { SigninUserSchema, SigninInput } from '@repo/common/types'
 
 
 const emailDomains = [
@@ -19,8 +19,8 @@ const Signin = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
     const usernameRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null);
-    const [signInData, setSignInData] = useState({
-        username: "",
+    const [signInData, setSignInData] = useState<SigninInput>({
+        email: "",
         password: "",
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
@@ -41,16 +41,18 @@ const Signin = () => {
         if (!ValidData.success) {
             const formatErrors = ValidData.error.format();
             setErrors({
-                email: formatErrors.username?._errors[0] || "",
+                email: formatErrors.email?._errors[0] || "",
                 password: formatErrors.password?._errors[0] || ""
             })
         }
         // setErrors({});
         try {
-            let resData = JSON.stringify(ValidData.data) 
-            // @ts-ignore
-            console.log("data :", ValidData.data?.toString())
-            const response = await axios.post(`${HTTP_URL}/api/v1/user/signin`, resData)
+            const userData = ValidData.data
+            const response = await axios.post(`${HTTP_URL}/api/v1/user/signin`, {
+                email: userData?.email,
+                password: userData?.password
+                
+            })
             const jwt = response.data.token;
             localStorage.setItem("token", jwt)
             router.push(`/canvas/:roomId`)
@@ -91,13 +93,13 @@ const Signin = () => {
                             <label className='text-sm' htmlFor="email">Email</label>
                             <Input
                                 className='focus:ring-none border-none bg-gray-500/10 focus:outline-none h-10 px-2 rounded-md'
-                                name="username"
+                                name="email"
                                 type={'text'}
                                 onChange={HandleChange}
                                 id="email"
                                 placeholder='name@email.com'
                                 ref={usernameRef}
-                                value={signInData.username}
+                                value={signInData.email}
                             />
                             {errors.username && <p className='text-sm text-red-600'>{errors.username}</p>}
                         </div>

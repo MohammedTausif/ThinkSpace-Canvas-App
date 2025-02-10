@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
 export const SignupUserSchema = z.object({
-    username: z.string().email().min(3).max(25, {
+    email: z.string().email().min(3).max(25, {
         message: "Email is Required"
     }),
-    password: z.string().min(6,{
-        message: "Min 6 digit is required "
+    password: z.string().min(6, {
+        message: "Password must be at least 6 characters "
     }).max(20, {
         message: "Password is required"
     }),
@@ -13,11 +13,14 @@ export const SignupUserSchema = z.object({
 })
 
 export const SigninUserSchema = z.object({
-    username: z.string().email().min(3).max(25),
-    password: z.string().min(6,"Password must be at least 6 characters").max(20),
+    email: z.string().email().min(3).max(25),
+    password: z.string().min(6, "Password must be at least 6 characters").max(20),
 
 })
 
 export const CreateRoomSchema = z.object({
-    name:z.string().min(4).max(10)
+    name: z.string().min(4).max(10)
 })
+
+export type SigninInput = z.infer <typeof SigninUserSchema>
+export type SignUpInput = z.infer<typeof SignupUserSchema>

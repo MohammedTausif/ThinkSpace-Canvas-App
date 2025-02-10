@@ -23,7 +23,7 @@ export const signup = async(req: Request, res:Response)=>{
     try{
         const user = await prismaClient.user.create({
             data:{
-                email: ParsedData.data?.username,
+                email: ParsedData.data?.email,
                 password: HashedPassword,
                 name: ParsedData.data?.name,
             }
@@ -35,7 +35,8 @@ export const signup = async(req: Request, res:Response)=>{
 
     }catch(e){
         res.status(411).json({
-            message: "User already exist with this username"
+            message: "User already exist with this username",
+             error: e
         })
 
     }
@@ -54,7 +55,7 @@ export const signin = async (req:Request, res:Response)=>{
     try{
         const user = await prismaClient.user.findFirst({
             where: {
-                email: parsedData.data.username
+                email: parsedData.data.email
             }
         })
         if(!user){

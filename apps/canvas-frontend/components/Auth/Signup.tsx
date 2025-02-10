@@ -6,7 +6,7 @@ import { Input } from '../ui/Input'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { HTTP_URL } from '@/config'
-import { SignupUserSchema } from '@repo/common/types'
+import { SignupUserSchema , SignUpInput} from '@repo/common/types'
 
 
 const emailDomains = [
@@ -21,8 +21,8 @@ const Signup = () => {
     // const passwordRef = useRef<HTMLInputElement>(null);
     // const nameRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState<Record<string, string>>({})
-    const [formData, setFormData] = useState({
-        username: "",
+    const [formData, setFormData] = useState<SignUpInput>({
+        email: "",
         password: "",
         name: ""
 
@@ -45,7 +45,7 @@ const Signup = () => {
         if (!ValidData.success) {
             const formatErrors = ValidData.error.format()
             setErrors({
-                username: formatErrors.username?._errors[0] || "",
+                username: formatErrors.email?._errors[0] || "",
                 password: formatErrors.password?._errors[0] || "",
                 name: formatErrors.name?._errors[0] || "",
                 
@@ -57,7 +57,7 @@ const Signup = () => {
             // console.log("userdata :" , userData)
             const response = await axios.post(`${HTTP_URL}/api/v1/user/signup`, {
                 data: {
-                    email: ,
+                    email: ValidData.data.email,
                     password: ValidData.data.password,
                     name: ValidData.data.name 
                     }
@@ -107,13 +107,13 @@ const Signup = () => {
                             <label className='text-sm font-black' htmlFor="email">Email</label>
                             <Input
                                 className='focus:ring-none border-none bg-gray-500/10 focus:outline-none h-10 px-2 rounded-md'
-                                name="username"
+                                name="email"
                                 type={'text'}
                                 id="email"
                                 placeholder='name@email.com'
                                 // ref={usernameRef}
                                 onChange={HandleChange}
-                                value={formData.username}
+                                value={formData.email}
                             />
                             {errors.username && <p className='text-sm text-red-600'>{errors.username}</p>}
                         </div>
