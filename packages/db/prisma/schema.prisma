@@ -8,8 +8,8 @@ datasource db {
 }
 
 enum Role {
-  member  
-  admin
+  MEMBER  
+  ADMIN
 }
 
 model User {
@@ -19,24 +19,23 @@ model User {
   name           String
   photo          String?
   
-  chats          Chat[]
-  rooms          Room[]
-  adminOf        Room[]   @relation("RoomAdmin")
+  chats                 Chat[]
+  adminOfRooms          Room[]   @relation("RoomAdmin")
+  roomMemberships       RoomMember[] 
 
 }
 
 //Workspace room
 model Room {
   id             Int           @id @default(autoincrement())
-  slug           String        @unique                         //Name of room
+  slug           String        @unique      //Room Name
   createdAt      DateTime      @default(now())
   adminId        String  
-  members        String[]                                     //to store members who can access virtual workspace room
-  role           Role[]                                     // member or admin
 
   chats          Chat[]
   admin          User          @relation( "RoomAdmin", fields: [adminId], references: [id])
-  member         User          @relation(fields: [members], references: [id])
+  members       RoomMember[] 
+ 
 }
 
 
@@ -46,6 +45,17 @@ model Chat{
   roomId          Int   
   userId          String
 
-  user            User     @relation(fields: [userId], references: [id])
-  room            Room     @relation(fields: [roomId], references: [id])
+  user            User         @relation(fields: [userId], references: [id])
+  room            Room         @relation(fields: [roomId], references: [id])
 }
+ 
+ model RoomMember{
+  id          Int       @id @default(autoincrement())
+  userId      String
+  roomId      Int
+  role        Role      //Admin or  Member
+
+  room        Room      @relation(fields: [roomId], references: [id])
+  user        User      @relation(fields: [userId],references: [id])
+  @@unique([userId, roomId])
+ }
