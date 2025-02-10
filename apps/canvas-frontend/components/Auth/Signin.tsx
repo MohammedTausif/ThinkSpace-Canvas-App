@@ -45,7 +45,7 @@ const Signin = () => {
                 password: formatErrors.password?._errors[0] || ""
             })
         }
-        // setErrors({});
+        setErrors({});
         try {
             const userData = ValidData.data
             const response = await axios.post(`${HTTP_URL}/api/v1/user/signin`, {

@@ -17,9 +17,8 @@ const emailDomains = [
 const Signup = () => {
     const router = useRouter()
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-    // const usernameRef = useRef<HTMLInputElement>(null)
-    // const passwordRef = useRef<HTMLInputElement>(null);
-    // const nameRef = useRef<HTMLInputElement>(null);
+    const [loading, setLoading]= useState<boolean>(false)
+ 
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [formData, setFormData] = useState<SignUpInput>({
         email: "",
@@ -36,9 +35,6 @@ const Signup = () => {
     }
 
     const handleSignup = async () => {
-        // const email = usernameRef.current?.value;
-        // const password = passwordRef.current?.value;
-        // const name = nameRef.current?.value;
         const ValidData = SignupUserSchema.safeParse(formData)
         console.log("validData :" , JSON.stringify(ValidData))
 
@@ -52,22 +48,20 @@ const Signup = () => {
             })
             return
         }
+
+        setErrors({})
         try {
-            const userEmail  = JSON.stringify(ValidData)
-            // console.log("userdata :" , userData)
+            setLoading(true)
+            const userData= ValidData.data
             const response = await axios.post(`${HTTP_URL}/api/v1/user/signup`, {
-                data: {
-                    email: ValidData.data.email,
-                    password: ValidData.data.password,
-                    name: ValidData.data.name 
-                    }
-                
+                    email: userData?.email,
+                    password: userData.password,
+                    name: userData?.name 
             })
-            const status = response.data.message
-            console.log("signup error status :", status)
-            if(status){
-            // router.push('/signin') 
-        }
+            alert("Signed Up")
+            setLoading(false)
+            router.push('/signin') 
+        
         } catch (error) {
             console.error("error signing up", error)
 
@@ -102,7 +96,7 @@ const Signup = () => {
                     </p>
                 </div>
                 <div className='flex flex-col gap-8'>
-                    <div className='grid w-full items-center gap-4 '>
+                    <div className='grid w-full items-center gap-3 '>
                         <div className='relative flex flex-col gap-2'>
                             <label className='text-sm font-black' htmlFor="email">Email</label>
                             <Input
@@ -111,11 +105,10 @@ const Signup = () => {
                                 type={'text'}
                                 id="email"
                                 placeholder='name@email.com'
-                                // ref={usernameRef}
                                 onChange={HandleChange}
                                 value={formData.email}
                             />
-                            {errors.username && <p className='text-sm text-red-600'>{errors.username}</p>}
+                            {errors.username && <p className='relative left-2 bottom-1text-sm text-red-500 '>{errors.username}</p>}
                         </div>
                         <div className='relative flex flex-col gap-2 '>
                             <div className='flex flex-col  '>
@@ -126,18 +119,9 @@ const Signup = () => {
                                     id='password'
                                     type={isPasswordVisible ? 'text' : 'password'}
                                     placeholder='••••••••'
-                                    // ref={passwordRef}
                                     value={formData.password}
                                     onChange={HandleChange}
-                                    onKeyDown={async (e) => {
-                                        if (e.key === 'Enter') {
-                                            handleSignup()
-                                        }
-                                    }}
-                                />
-                                {errors.password && <p  className='text-sm text-red-600'>{errors.password}</p>}
-                                {errors.name && <p  className='text-sm text-red-600'>{errors.name}</p>}
-
+                                /> 
                                 <button
                                     className='absolute bottom-0 right-0 flex h-10 items-center px-4 text-neutral-500'
                                     onClick={HandlePasswordVisibility}
@@ -181,7 +165,11 @@ const Signup = () => {
                                     )}
                                 </button>
                             </div>
-                            <label className='text-sm font-black' htmlFor="email">First Name</label>
+                             
+                           
+                        </div>
+                            {errors.password && <p  className=' text-sm relative left-2 bottom-1 text-red-500'>{' '}{errors.password}</p>}
+                        <label className='text-sm font-black' htmlFor="email">First Name</label>
                             
                             <Input
                                 className='focus:ring-none border-none bg-gray-500/10 focus:outline-none h-10 px-2 rounded-md'
@@ -191,13 +179,21 @@ const Signup = () => {
                                 placeholder='John'
                                 value={formData.name}
                                 onChange={HandleChange}
+                                onKeyDown={async (e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSignup()
+                                    }
+                                }}
                             />
-                        </div>
+                              {errors.name && <p  className='relative left-2 bottom-1 text-sm  text-red-500'>{errors.name}</p>}
+
+                        
                     </div>
+                    
 
                     <Button
                         title='Register'
-                        className='text-sm'
+                        className={`${loading? "pointer-events-none text-sm" : "text-sm"}`}
                         onClick={handleSignup}
                     />
                 </div>

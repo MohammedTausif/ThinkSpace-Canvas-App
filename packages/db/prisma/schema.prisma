@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  member  
+  admin
+}
+
 model User {
   id             String         @id @default(uuid())
   email          String         @unique     
@@ -16,16 +21,22 @@ model User {
   
   chats          Chat[]
   rooms          Room[]
+  adminOf        Room[]   @relation("RoomAdmin")
+
 }
 
+//Workspace room
 model Room {
   id             Int           @id @default(autoincrement())
-  slug           String        @unique
+  slug           String        @unique                         //Name of room
   createdAt      DateTime      @default(now())
   adminId        String  
+  members        String[]                                     //to store members who can access virtual workspace room
+  role           Role[]                                     // member or admin
 
   chats          Chat[]
-  admin          User          @relation(fields: [adminId], references: [id])
+  admin          User          @relation( "RoomAdmin", fields: [adminId], references: [id])
+  member         User          @relation(fields: [members], references: [id])
 }
 
 
