@@ -33,7 +33,7 @@ async function getExistingShapes(roomId:string) {
 }
 
 //Logic for drawing Rectangle Shape
-export async function initDraw(canvas: HTMLCanvasElement, roomId:string) {
+export async function initDraw(canvas: HTMLCanvasElement, roomId:string, socket : WebSocket) {
 
     let existingShapes: Shape[] =[]
     const ctx = canvas.getContext("2d");
@@ -41,6 +41,17 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId:string) {
     if (!ctx) {
         return
     }
+    socket.onmessage=(event)=>{
+        const data = JSON.parse(event.data)
+
+        if(data.type == "chat"){
+            const parsedShapes = JSON.parse(data.message)
+            existingShapes.push(parsedShapes)
+            clearCanvas(existingShapes, canvas, ctx);
+        }
+
+    }
+
 
     ctx.fillStyle = "rgba(0, 0, 0)"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -60,13 +71,21 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId:string) {
         clicked = false;
         const width = e.clientX - startX;
         const height = e.clientY - startY;
-        existingShapes.push({
+        const shape:Shape  = {
             type: "rect",
             x: startX,
             y: startY,
             height,
             width
-        })
+        }
+        existingShapes.push(shape)
+
+        socket.send(JSON.stringify({
+            type : "chat",
+            message: JSON.stringify({
+                shape
+            })
+        }))
 
     })
 

@@ -51,11 +51,12 @@ model Chat{
  
  model RoomMember{
   id          Int       @id @default(autoincrement())
-  userId      String
+  userId      String    
   roomId      Int
   role        Role      //Admin or  Member
 
   room        Room      @relation(fields: [roomId], references: [id])
   user        User      @relation(fields: [userId],references: [id])
+
   @@unique([userId, roomId])
  }

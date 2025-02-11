@@ -20,7 +20,6 @@ export const CreateRoom = async (req: Request, res: Response) => {
             data: {
                 slug: parsedData.data?.name,
                 adminId: userId as string,
-                role: ["admin"],
                 members : {},
             }
         })
@@ -61,25 +60,22 @@ export const joinRoom = async (req: Request, res: Response)=>{
     const userId = req.userId
 
     try{
-        const room = await prismaClient.room.update({
-            where:{
-                id: Number(roomId)
-            },
+        const room = await prismaClient.roomMember.create({
             data: {
-                members : {
-                    connect: [{id: userId}]
-                }
+                userId :String (userId) ,
+                roomId: Number(roomId),
+                role: "MEMBER",
             }
         })
         res.json({
             message: "User Joined Successfully .",
-            Room_Name: room.slug
+            Room_Name: room
         })
 
     }catch(e){
         console.log(e)
       res.json({
-        message: "Error Joining Room",
+        message: "Room Doesn't Exist",
         error: e
       })
     }
@@ -89,7 +85,7 @@ export const joinRoom = async (req: Request, res: Response)=>{
 export const removeUser = async(req: Request, res:Response)=>{
     const memberId = req.body.memberId;
     const roomId = req.body.roomId
-    const adminId = req.body.userId;
+    const adminId = req.userId;
 
 // first check if the requesting user is the admin of that room
 try{
@@ -97,7 +93,7 @@ try{
         where: {
             id: roomId
         },
-        select: {adminId :adminId }
+        select: {adminId :true }
     });
     if(!room){
         res.json({
@@ -112,21 +108,19 @@ try{
 
     // Now if the user is admin he can remove the members of that room
 
-    const removeUser = await prismaClient.room.update({
-        where: {
-            id: roomId
-        },
-        data : {
-            members : {
-                disconnect : [{id: memberId}]
-            }
+    const removeUser = await prismaClient.roomMember.deleteMany({
+        where:{
+            roomId: Number(roomId),
+            userId: String(memberId)
         }
     });
+    
     res.json({
         message: "User removed from the room successfully ."
     })
 
 }catch(error){
+    console.error(error)
     res.json({
         message: "Error removing user",
         error: error
