@@ -7,7 +7,7 @@ export const getChats= async (req:Request, res:Response)=>{
 
     try{
         const roomId = Number (req.params.roomId)
-        const messages = await prismaClient.chat.findMany({
+        const messages = await prismaClient.shape.findMany({
             where: {
                 roomId: roomId
             },
