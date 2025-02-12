@@ -82,7 +82,7 @@ wss.on('connection', function connection(ws, request) {
                     return; // Stop execution if roomId is invalid 
                 }
                 
-                await prismaClient.chat.create({
+                await prismaClient.shape.create({
                     data: {
                         roomId: Number(roomId),
                         message,
