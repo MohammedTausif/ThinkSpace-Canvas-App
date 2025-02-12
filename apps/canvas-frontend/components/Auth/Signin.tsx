@@ -55,14 +55,18 @@ const Signin = () => {
             })
             const jwt = response.data.token;
             localStorage.setItem("token", jwt)
-            router.push(`/canvas/:roomId`)
+            router.push(`/dashboard`)
         }
         catch (error) { 
             console.error("error is:", error)
         }
     }
 
-
+    async function handleSigninTest() {
+        router.push(`/dashboard`)
+    }
+  
+      
     return (
         <section className='p-4 wrapper relative min-h-screen flex items-center justify-center overflow-hidden antialiased'>
             <motion.div
@@ -118,7 +122,7 @@ const Signin = () => {
 
                                     onKeyDown={async (e) => {
                                         if (e.key === 'Enter') {
-                                            handleSignin()
+                                            handleSigninTest()
                                         }
                                     }}
                                 />
@@ -173,7 +177,7 @@ const Signin = () => {
                     <Button
                         className='text-[16px]'
                         title='Signin'
-                        onClick={handleSignin}
+                        onClick={handleSigninTest}
 
                     />
                 </div>
