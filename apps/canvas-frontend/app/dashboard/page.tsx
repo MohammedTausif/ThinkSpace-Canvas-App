@@ -1,6 +1,9 @@
 "use client"
 import { Users, ArrowRight, Calendar, Plus } from 'lucide-react';
+import CreateRoomModal from '../createroom/page';
+import { useState } from 'react';
 export default function DashboardPage(){
+  const [roomModal, setRoomModal] = useState<boolean>(false)
     const rooms = [
         {
           id: 1,
@@ -37,14 +40,17 @@ export default function DashboardPage(){
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold text-gray-900">Product Rooms</h1>
-              <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm">
+              <h1 className="text-3xl font-bold text-gray-900">Workspace Rooms</h1>
+              <button
+                onClick={()=> setRoomModal(!roomModal)}
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm">
                 <Plus className="w-5 h-5 mr-2" />
                 Create Room
               </button>
             </div>
           </div>
         </header>
+        <CreateRoomModal isOpen={roomModal} onSubmit={()=>setRoomModal} onClose={()=>setRoomModal(!roomModal)} />
   
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
