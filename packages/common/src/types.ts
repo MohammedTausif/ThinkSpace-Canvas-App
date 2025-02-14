@@ -24,3 +24,4 @@ export const CreateRoomSchema = z.object({
 
 export type SigninInput = z.infer <typeof SigninUserSchema>
 export type SignUpInput = z.infer<typeof SignupUserSchema>
+export type CreateRoomInput = z.infer<typeof CreateRoomSchema>

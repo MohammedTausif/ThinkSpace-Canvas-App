@@ -1,6 +1,8 @@
 "use client"
+import CreateRoomModal from '@/components/ui/RoomModal';
+import { HTTP_URL } from '@/config';
+import axios from 'axios';
 import { Users, ArrowRight, Calendar, Plus } from 'lucide-react';
-import CreateRoomModal from '../createroom/page';
 import { useState } from 'react';
 export default function DashboardPage(){
   const [roomModal, setRoomModal] = useState<boolean>(false)
@@ -34,13 +36,21 @@ export default function DashboardPage(){
           participants: 6
         }
       ];
+
+      function createRoom(title: string){
+        axios.post(`${HTTP_URL}/api/v1/room`, {
+          slug: title 
+        })
+      }
+
+
     return (
         <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold text-gray-900">Workspace Rooms</h1>
+              <h1 className="text-3xl font-bold text-gray-900 ">Workspace Rooms</h1>
               <button
                 onClick={()=> setRoomModal(!roomModal)}
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm">
@@ -50,7 +60,10 @@ export default function DashboardPage(){
             </div>
           </div>
         </header>
-        <CreateRoomModal isOpen={roomModal} onSubmit={()=>setRoomModal} onClose={()=>setRoomModal(!roomModal)} />
+        <CreateRoomModal 
+        isOpen={roomModal} 
+        onSubmit={createRoom} 
+        onClose={()=>setRoomModal(!roomModal)} />
   
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
