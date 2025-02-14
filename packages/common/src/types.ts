@@ -19,7 +19,7 @@ export const SigninUserSchema = z.object({
 })
 
 export const CreateRoomSchema = z.object({
-    name: z.string().min(4).max(10)
+    name: z.string().min(4, "Minimum 4 digit name is Required ").max(20, "Maximum 20 words names are allowded")
 })
 
 export type SigninInput = z.infer <typeof SigninUserSchema>

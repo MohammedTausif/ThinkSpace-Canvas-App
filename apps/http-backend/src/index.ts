@@ -3,7 +3,7 @@ import UserRoutes from './routes/userRoutes'
 import RoomRoutes from './routes/roomRoutes'
 import ChatRoutes from './routes/chatsRoutes'
 import cors from 'cors'
-import { joinRoom } from './controllers/room'
+
 
 const app = express();
 app.use(express.json())

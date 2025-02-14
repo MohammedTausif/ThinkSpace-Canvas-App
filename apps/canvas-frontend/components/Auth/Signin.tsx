@@ -54,7 +54,7 @@ const Signin = () => {
                 
             })
             const jwt = response.data.token;
-            localStorage.setItem("token", jwt)
+            localStorage.setItem('token', jwt)
             router.push(`/dashboard`)
         }
         catch (error) { 
@@ -62,9 +62,7 @@ const Signin = () => {
         }
     }
 
-    async function handleSigninTest() {
-        router.push(`/dashboard`)
-    }
+    
   
       
     return (
@@ -122,7 +120,7 @@ const Signin = () => {
 
                                     onKeyDown={async (e) => {
                                         if (e.key === 'Enter') {
-                                            handleSigninTest()
+                                            handleSignin()
                                         }
                                     }}
                                 />
@@ -177,7 +175,7 @@ const Signin = () => {
                     <Button
                         className='text-[16px]'
                         title='Signin'
-                        onClick={handleSigninTest}
+                        onClick={handleSignin}
 
                     />
                 </div>

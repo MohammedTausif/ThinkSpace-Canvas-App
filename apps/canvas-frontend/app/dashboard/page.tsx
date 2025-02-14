@@ -61,8 +61,7 @@ export default function DashboardPage(){
           </div>
         </header>
         <CreateRoomModal 
-        isOpen={roomModal} 
-        onSubmit={createRoom} 
+        isOpen={roomModal}  
         onClose={()=>setRoomModal(!roomModal)} />
   
         {/* Main Content */}

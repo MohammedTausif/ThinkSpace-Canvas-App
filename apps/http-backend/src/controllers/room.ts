@@ -1,5 +1,6 @@
 import { CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client";
+import { error } from "console";
 import { Request, Response } from "express";
 
 
@@ -26,7 +27,8 @@ export const CreateRoom = async (req: Request, res: Response) => {
         })
     } catch (e) {
         res.status(411).json({
-            message: "Room already exists with this name"
+            message: "Room already exists with this name",
+            error:e
         })
     }
 }
