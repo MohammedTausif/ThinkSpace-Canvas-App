@@ -22,7 +22,7 @@ export function RoomCanvas(
             }))
         }
         
-    },[socket, Canvas, roomId])
+    },[])
     
     if(!socket){
         return <div> 

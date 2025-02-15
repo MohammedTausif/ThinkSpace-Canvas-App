@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { HTTP_URL } from '@/config';
+import getExistingShapes from './FetchShapes';
 
 type Shape = {
     type: "rect",
@@ -20,31 +21,21 @@ type Shape = {
     endY: number,
 }
 
-// to get all the previous existing shapes
-async function getExistingShapes(roomId:string) {
-    // const res = await axios.get(`${HTTP_URL}/api/v1/chats/${roomId}`);
-    // const messages = res.data.messages;
-    // const shapes = messages.map((x: {message : string})=>{
-    //     const messageData = JSON.parse(x.message)
-    //     return messageData.shape;
-    // })
-    // return shapes;
-    return JSON.parse(roomId)
-}
+
 
 //Logic for drawing Rectangle Shape
-export async function initDraw(canvas: HTMLCanvasElement, roomId:string, socket : WebSocket) {
+export async function initDraw(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
 
-    let existingShapes: Shape[] =[]
     const ctx = canvas.getContext("2d");
+    let existingShapes: Shape[] = await getExistingShapes(roomId)
 
     if (!ctx) {
         return
     }
-    socket.onmessage=(event)=>{
+    socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
 
-        if(data.type == "chat"){
+        if (data.type == "chat") {
             const parsedShapes = JSON.parse(data.message)
             existingShapes.push(parsedShapes)
             clearCanvas(existingShapes, canvas, ctx);
@@ -56,7 +47,7 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId:string, socket 
     ctx.fillStyle = "rgba(0, 0, 0)"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-
+    clearCanvas(existingShapes, canvas, ctx)
     let clicked = false;
     let startX = 0;
     let startY = 0;
@@ -71,17 +62,34 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId:string, socket 
         clicked = false;
         const width = e.clientX - startX;
         const height = e.clientY - startY;
-        const shape:Shape  = {
-            type: "rect",
-            x: startX,
-            y: startY,
-            height,
-            width
+
+        //@ts-ignore
+        const selectedTool = window.selectedTool
+        let shape: Shape | null = null
+        if (selectedTool === "rect") {
+            shape = {
+                type: "rect",
+                x: startX,
+                y: startY,
+                height,
+                width
+            }
+        } else if (selectedTool === "circle") {
+            const radius = Math.max(width, height) / 2
+            shape = {
+                type: "circle",
+                radius: radius,
+                centerX: startX + radius,
+                centerY: startY + radius,
+            }
+        }
+        if (!shape) {
+            return;
         }
         existingShapes.push(shape)
 
         socket.send(JSON.stringify({
-            type : "chat",
+            type: "chat",
             message: JSON.stringify({
                 shape
             })
@@ -95,12 +103,22 @@ export async function initDraw(canvas: HTMLCanvasElement, roomId:string, socket 
             const height = e.clientY - startY;
             clearCanvas(existingShapes, canvas, ctx);
             ctx.strokeStyle = "rgba(255, 255, 255)"
-            ctx.strokeRect(startX, startY, width, height)
+            //@ts-ignore
+            const selectedTool = window.selectedTool;
+            if (selectedTool === "rect") {
+                ctx.strokeRect(startX, startY, width, height)
+            } else if (selectedTool === "circle") {
+                const radius = Math.max(width, height) / 2
+                const centerX = startX + radius;
+                const centerY = startY + radius;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.closePath();
 
+            }
         }
-
     })
-
 }
 
 // clearing canvas after drawing one rectangle => to allow access for drawing multiple rectangles
@@ -113,6 +131,11 @@ function clearCanvas(existingShapes: Shape[], canvas: HTMLCanvasElement, ctx: Ca
         if (shape.type == "rect") {
             ctx.strokeStyle = "rgba(255, 255, 255)";
             ctx.strokeRect(shape.x, shape.y, shape.width, shape.height)
+        } else if (shape.type === "circle") {
+            ctx.beginPath();
+            ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2)
+            ctx.stroke();
+            ctx.closePath()
         }
     })
 

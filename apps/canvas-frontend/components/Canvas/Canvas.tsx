@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { initDraw } from "@/Draw/draw";
+import { useEffect, useRef } from "react";
 
 
 
@@ -12,12 +13,17 @@ export function Canvas({
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
 
+  useEffect(()=>{
+    if(canvasRef.current){
+        
+        initDraw(canvasRef.current, roomId, socket)
+    }
+  },[canvasRef.current])
 
 
 
 
-
-    return <div>
+    return <div className=" h-[100vh] overflow-hidden">
         <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
     </div>
 
