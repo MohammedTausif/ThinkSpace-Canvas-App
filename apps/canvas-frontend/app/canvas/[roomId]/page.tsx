@@ -5,11 +5,11 @@ import { RoomCanvas } from "@/components/Canvas/RoomCanvas";
 async function CanvasPage({params}:{
     params :{
         roomId: string
-        token : string
+        
     }
 }) {
     const roomId = (await params).roomId
-    const token = await params.token
+    // const token = await params.token
 
 
     return <RoomCanvas roomId={roomId}></RoomCanvas>
