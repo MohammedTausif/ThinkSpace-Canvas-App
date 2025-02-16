@@ -14,19 +14,22 @@ export function Canvas({ roomId, socket }: CanvasProps){
     const [selectedTool, setSelectedTool] = useState<Tool>("circle")
 
 
+    useEffect(()=>{
+      //@ts-ignore
+      window.selectedTool = selectedTool
+    },[selectedTool])
+
   useEffect(()=>{
     if(canvasRef.current){
-        
-        initDraw(canvasRef.current, roomId, socket)
-        
+        initDraw(canvasRef.current, roomId, socket)   
     }
-  },[canvasRef.current])
+  },[canvasRef])
 
 
 
 
-    return <div className=" h-[100vh] overflow-hidden">
-        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
+    return <div className=" h-[100vh] overflow-hidden  ">
+        <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight} ></canvas>
         <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool}/>
     </div>
 
