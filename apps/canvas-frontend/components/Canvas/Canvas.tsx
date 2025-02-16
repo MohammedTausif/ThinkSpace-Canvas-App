@@ -1,6 +1,7 @@
 import { initDraw } from "@/Draw/draw";
 import { useEffect, useRef, useState } from "react";
 import Topbar from "../Topbar/Toolbar";
+import { Game } from "@/Draw/Game";
 
 interface CanvasProps{
     roomId: string,
@@ -11,17 +12,22 @@ export type Tool= "circle" | "rect" | "pencil";
 
 export function Canvas({ roomId, socket }: CanvasProps){
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [game, setGame]= useState<Game>();
     const [selectedTool, setSelectedTool] = useState<Tool>("circle")
 
 
     useEffect(()=>{
-      //@ts-ignore
-      window.selectedTool = selectedTool
-    },[selectedTool])
+      game?.setTool(selectedTool)
+    },[selectedTool, game])
 
   useEffect(()=>{
     if(canvasRef.current){
-        initDraw(canvasRef.current, roomId, socket)   
+        const draw = new Game(canvasRef.current, roomId, socket)   
+        setGame(draw);
+
+        return()=>{
+          draw.destroy();
+        }
     }
   },[canvasRef])
 

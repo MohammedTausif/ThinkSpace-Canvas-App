@@ -25,10 +25,11 @@ function checkUser(token: string): string | null {
         if (!decoded || !decoded.userId) {
             return null
         }
-        return decoded?.userId;
+        return decoded.userId;
     } catch (error) {
         return null;
     }
+    return null;
 }
 wss.on('connection', function connection(ws, request) {
     const url = request.url;
@@ -60,12 +61,12 @@ wss.on('connection', function connection(ws, request) {
         }
         // for Joining a Room
         if (parsedData.type === "join_room") {
-            const user = users.find(x => x.ws == ws);
+            const user = users.find(x => x.ws === ws);
             user?.rooms.push(parsedData.roomId);
         }
         // for exiting a joined Room
         if (parsedData.type === "leave_room") {
-            const user = users.find(x => x.ws == ws)
+            const user = users.find(x => x.ws === ws)
             if (!user) {
                 return;
             }
@@ -77,10 +78,10 @@ wss.on('connection', function connection(ws, request) {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
             try {
-                if (!roomId || isNaN(Number(roomId))) {
-                    console.error("Invalid roomId:", roomId);
-                    return; // Stop execution if roomId is invalid 
-                }
+                // if (!roomId || isNaN(Number(roomId))) {
+                //     console.error("Invalid roomId:", roomId);
+                //     return; // Stop execution if roomId is invalid 
+                // }
                 
                 await prismaClient.shape.create({
                     data: {
@@ -89,6 +90,8 @@ wss.on('connection', function connection(ws, request) {
                         userId
                     }
                 });
+                console.log("shape saved in DB ")
+            
             } catch (error) {
                 console.error("error sending message :", error)
             }

@@ -5,18 +5,12 @@ import { RoomCanvas } from "@/components/Canvas/RoomCanvas";
 async function CanvasPage({params}:{
     params :{
         roomId: string
+        token : string
     }
 }) {
     const roomId = (await params).roomId
-   
-//     useEffect(() => {
-// 
-//         if (canvasRef.current) {
-//             const canvas = canvasRef.current;
-//             initDraw(canvas, "roomId")
-//         }
-// 
-//     }, [canvasRef])
+    const token = await params.token
+
 
     return <RoomCanvas roomId={roomId}></RoomCanvas>
 

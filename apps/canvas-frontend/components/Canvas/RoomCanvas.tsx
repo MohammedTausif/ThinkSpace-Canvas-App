@@ -2,6 +2,7 @@
 import { WS_URL } from "@/config";
 import { CanvasHTMLAttributes, useEffect, useRef, useState } from "react";
 import { Canvas } from "./Canvas";
+import { data } from "framer-motion/client";
 
 
 export function RoomCanvas(
@@ -20,6 +21,7 @@ export function RoomCanvas(
                 type : "join_room",
                 roomId
             }))
+           
         }
         
     },[])
@@ -31,7 +33,7 @@ export function RoomCanvas(
     }
 
     return <div>
-    <Canvas roomId={roomId} socket={socket}></Canvas>
+    <Canvas roomId={roomId} socket={socket}/>
     </div>
 
 
