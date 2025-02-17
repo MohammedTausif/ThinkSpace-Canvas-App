@@ -5,6 +5,44 @@ import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
 
 
+//http://localhost:4000/api/v1/rooms
+export const getRoomByAdminId = async (req: Request, res: Response) => {
+    const userId = req.body.userId
+    try {
+        const rooms = await prismaClient.room.findMany({
+            where: {
+                adminId: userId
+            },
+            include: {
+                admin: {
+                    select: {
+                        id: true,
+                        name: true,
+                        photo: true
+                    },
+                },
+            },
+        })
+
+        res.status(200).json({
+            message: "Rooms fetched Successfully",
+            status: 'success',
+            rooms: rooms,
+        })
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: "Error Fetching Rooms",
+            error: error,
+
+        })
+
+
+    }
+
+
+
+}
 
 //http://localhost:4000/api/v1/room => POST (Req for Creating a Room)
 export const CreateRoom = async (req: Request, res: Response) => {
