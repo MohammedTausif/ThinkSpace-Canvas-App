@@ -29,7 +29,6 @@ function checkUser(token: string): string | null {
     } catch (error) {
         return null;
     }
-    return null;
 }
 wss.on('connection', function connection(ws, request) {
     const url = request.url;

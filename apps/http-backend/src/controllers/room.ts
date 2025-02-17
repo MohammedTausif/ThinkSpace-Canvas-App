@@ -1,6 +1,7 @@
+import { JWT_SECRET } from "@repo/backend-common/config";
 import { CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client";
-import { error } from "console";
+import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
 
 
@@ -28,7 +29,7 @@ export const CreateRoom = async (req: Request, res: Response) => {
     } catch (e) {
         res.status(411).json({
             message: "Room already exists with this name",
-            error:e
+            error: e
         })
     }
 }
@@ -46,7 +47,7 @@ export const GetRooms = async (req: Request, res: Response) => {
         res.json({
             room
         })
-    }catch(error){
+    } catch (error) {
         console.error("Error Getting Rooms :", error)
     }
 
@@ -56,15 +57,21 @@ export const GetRooms = async (req: Request, res: Response) => {
 export const FetchRooms = async (req: Request, res: Response) => {
     const roomId = req.params.roomId
     try {
-        const room = await prismaClient.room.findFirst({
+        const room = await prismaClient.room.findUnique({
             where: {
                 id: Number(roomId)
             }
         })
+
+        const token = await jwt.sign({
+            id: room?.adminId
+        }, JWT_SECRET)
+
         res.json({
-            room
+            room: room,
+            token: token
         })
-    }catch(error){
+    } catch (error) {
         console.error("Error Getting Rooms :", error)
     }
 
