@@ -23,7 +23,7 @@ export default function Card({id, name,createdAt, adminId, owner, photo }: CardP
                   
                   <div className="space-y-3">
                     <div className="flex items-center text-gray-600">
-                        <img src={photo} alt="image" />
+                        <img src={photo} alt="" />
                       <Users className="w-5 h-5 text-blue-600 mr-2" />
                       <span className="text-sm">Owner: {owner}</span>
                     </div>
