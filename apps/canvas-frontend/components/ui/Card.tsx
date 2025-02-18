@@ -2,14 +2,14 @@ import { ArrowRight, Calendar, Users } from "lucide-react";
 
 interface CardProps{
     id: number,
-    name: string,
+    slug: string,
     createdAt: any,
-    adminId?: string,
-    owner: string,
-    photo? : string
+    adminId: number,
+    name : string,
+    photo? : any
 
 }
-export default function roomCard({id, name,createdAt, adminId, owner, photo }: CardProps){
+export default function RoomCard({id, slug ,createdAt,  name, photo, adminId }: CardProps){
     return <div
                 key={id}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
@@ -17,7 +17,7 @@ export default function roomCard({id, name,createdAt, adminId, owner, photo }: C
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h2 className="text-xl font-semibold text-gray-900 flex-1">
-                      {name}
+                      {slug}
                     </h2>
                   </div>
                   
@@ -25,7 +25,7 @@ export default function roomCard({id, name,createdAt, adminId, owner, photo }: C
                     <div className="flex items-center text-gray-600">
                         <img src={photo} alt="" />
                       <Users className="w-5 h-5 text-blue-600 mr-2" />
-                      <span className="text-sm">Owner: {owner}</span>
+                      <span className="text-sm">Owner: {name}</span>
                     </div>
                     
                     <div className="flex items-center text-gray-600">

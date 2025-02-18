@@ -5,7 +5,9 @@ import axios from 'axios';
 import { Users, ArrowRight, Calendar, Plus } from 'lucide-react';
 import NavbarDashboard from '@/components/Dashboard/Navbar';
 import { useEffect, useState } from 'react';
-import roomCard from '@/components/ui/Card';
+import RoomCard from '@/components/ui/Card';
+import { div } from 'framer-motion/client';
+import { error } from 'console';
 
 interface room {
   id: number,
@@ -14,32 +16,32 @@ interface room {
   adminId: number,
   admin : {
     name: string,
-    photo: string,
+    photo?: string,
   }
-
-
 }
 export default function DashboardPage() {
   const [roomModal, setRoomModal] = useState<boolean>(false)
+  const [roomss, setRoomss] = useState<room[]>([])
 
-  let rooms: room[] = []
+  const rooms: room[] = []
   const fetchRooms = async () => {
-
+   
+    try{
     const response = await axios.get(`${HTTP_URL}/api/v1/rooms`, {
       headers: {
         Authorization: localStorage.getItem('token')
       }
     })
-    // console.log("response :" , response)
-    rooms.push(response.data.rooms)
-    console.log("response: ", response.data.rooms)
-
-    return rooms 
+    setRoomss(response.data)
+    console.log("response.data : ", roomss)
+  }catch(error){
+   console.error("Error fetchung rooms: ", error)
+  }
 
   }
   useEffect(() => {
    fetchRooms()
-  }, [])
+  }, [roomModal])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -56,10 +58,13 @@ export default function DashboardPage() {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rooms.length > 0 && rooms.map((room: any) => (
-            <roomCard key={room.id} id={room.id} photo={room.admin.photo} name={room.title} adminId={room.owner} createdAt={room.createdAt} owner={room.owner} />
-            // <roomCard key={room.id} id={room.id} photo={room.admin.photo} name={room.title} adminId={room.owner} createdAt={room.createdAt} owner={room.owner} />
-
+            
+              <div>
+                
+              </div>
+            
+          {roomss.length > 0 && roomss.map((room) => (
+            <RoomCard key={room.id} id={room.id} photo={room.admin.photo}  slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} />
           ))}
         </div>
       </main>
