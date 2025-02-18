@@ -9,17 +9,7 @@ export  function RoomCanvas(
     {roomId}:{roomId: string
 }){
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    // const [token, setToken] = useState("")
-    
-//     const FindRoom =async (roomId: string)=>{
-// 
-//         const response = await axios.get(`${HTTP_URL}/api/v1/room/${roomId}`)
-//         const token = response.data.token
-//         console.log("response : ", response.data.token)
-//         // const tooken = localStorage.setItem('token', token)
-//         return token
-// 
-//     }
+
     
     useEffect(()=>{
         let token;
