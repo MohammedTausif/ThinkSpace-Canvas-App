@@ -2,6 +2,7 @@ import Link from "next/link"
 import {Button} from '@repo/ui/button'
 import {Card} from '@repo/ui/card'
 import { Pencil, Share2, Users2, Sparkles, Github, Download, Linkedin } from "lucide-react";
+
 const Hero=()=> {
   return (
     <div className="min-h-screen bg-background">

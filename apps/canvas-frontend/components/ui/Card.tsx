@@ -9,7 +9,7 @@ interface CardProps{
     photo? : string
 
 }
-export default function Card({id, name,createdAt, adminId, owner, photo }: CardProps){
+export default function roomCard({id, name,createdAt, adminId, owner, photo }: CardProps){
     return <div
                 key={id}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"

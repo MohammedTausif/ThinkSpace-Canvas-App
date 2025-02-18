@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Users, ArrowRight, Calendar, Plus } from 'lucide-react';
 import NavbarDashboard from '@/components/Dashboard/Navbar';
 import { useEffect, useState } from 'react';
-import Card from '@/components/ui/Card';
+import roomCard from '@/components/ui/Card';
 
 interface room {
   id: number,
@@ -45,7 +45,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
 
       <NavbarDashboard
-        onClick={() => setRoomModal(!roomModal)}
+        openForm={() => setRoomModal(!roomModal)}
       />
       <CreateRoomModal
         isOpen={roomModal}
@@ -57,7 +57,8 @@ export default function DashboardPage() {
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.length > 0 && rooms.map((room: any) => (
-            <Card key={room.id} id={room.id} photo={room.admin.photo} name={room.title} adminId={room.owner} createdAt={room.createdAt} owner={room.owner} />
+            <roomCard key={room.id} id={room.id} photo={room.admin.photo} name={room.title} adminId={room.owner} createdAt={room.createdAt} owner={room.owner} />
+            // <roomCard key={room.id} id={room.id} photo={room.admin.photo} name={room.title} adminId={room.owner} createdAt={room.createdAt} owner={room.owner} />
 
           ))}
         </div>
