@@ -7,7 +7,7 @@ interface CardProps{
     adminId: number,
     name : string,
     photo? : any,
-    onClick: (s: any)=>void
+    onClick: (id: any)=>void
 
 }
 export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick }: CardProps){

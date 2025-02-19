@@ -22,18 +22,14 @@ export default function DashboardPage() {
   const [roomModal, setRoomModal] = useState<boolean>(false)
   const [rooms, setRooms] = useState<room[]>([])
 
-  const GotoRoom=async(id: any)=>{
-    const roomId= id;
-   const room = axios.post(`${HTTP_URL}/api/v1/room`,{
-    where: {
-      id: roomId
-    }})
-    if(!room){
-      return
+   function GotoRoom (id: number){
+    if(isNaN (id)){
+      console.log("roomId is NaN")
+      return 
     }
+    const roomId= id;
     router.push(`canvas/${roomId}`)
-
-
+    console.log("roomId : ",roomId)
   }
 
   const fetchRooms = async () => {
@@ -69,7 +65,7 @@ export default function DashboardPage() {
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.length > 0 && rooms.map((room: room) => (
-            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} onClick={GotoRoom}/>
+            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} onClick={()=>GotoRoom(room.id)}/>
           ))}
         </div>
       </main>
