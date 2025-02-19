@@ -1,16 +1,17 @@
-import { ArrowRight, Calendar, Users } from "lucide-react";
+import { ArrowRight, Calendar, Link, Users } from "lucide-react";
 
 interface CardProps{
     id: number,
     slug: string,
-    createdAt: any,
+    createdAt: string,
     adminId: number,
     name : string,
     photo? : any,
-    onClick: (id: any)=>void
+    onClick: (id: any)=>void,
+    Invite : (id: any)=> void,
 
 }
-export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick }: CardProps){
+export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick, Invite }: CardProps){
     return <div
                 key={id}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
@@ -18,7 +19,7 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h2 className="text-xl font-semibold text-gray-900 flex-1">
-                      {slug}
+                      {slug.toLocaleUpperCase()}
                     </h2>
                   </div>
                   
@@ -31,15 +32,18 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                     
                     <div className="flex items-center text-gray-600">
                       <Calendar className="w-5 h-5 text-blue-600 mr-2" />
-                      <span className="text-sm">Created: {createdAt}</span>
+                      <h1 className="text-sm">Created: {new Date(createdAt).getDate()}-{new Date(createdAt).getMonth()+1}-{new Date(createdAt).getFullYear()}</h1>
                     </div>
   
                     <div className="flex items-center text-gray-600">
-                      <Users className="w-5 h-5 text-blue-600 mr-2" />
-                      <span className="text-sm"> participants</span>
+                      {/* <Users className="w-5 h-5 text-blue-600 mr-2" /> */}
+                      <Link className="w-5 h-5 text-blue-600"/>
+                    <button onClick={Invite}>
+                       <span className="text-sm pl-2 cursor-pointer hover:text-blue-600 hover:underline"
+                      > Invite to Collaborate</span>
+                      </button> 
                     </div>
                   </div>
-  
                   <div className="mt-6">
                     <button
                     onClick={onClick}

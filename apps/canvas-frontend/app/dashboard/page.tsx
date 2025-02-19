@@ -1,11 +1,12 @@
 "use client"
 import CreateRoomModal from '@/components/ui/RoomModal';
-import { HTTP_URL } from '@/config';
+import { FE_URL, HTTP_URL } from '@/config';
 import axios from 'axios';
 import NavbarDashboard from '@/components/Dashboard/Navbar';
 import { useEffect, useState } from 'react';
 import RoomCard from '@/components/ui/Card';
 import { useRouter } from 'next/navigation';
+import {motion} from 'framer-motion'
 
 interface room {
   id: number,
@@ -45,12 +46,31 @@ export default function DashboardPage() {
     }
 
   }
+
+  function CreateInviteLink (id: number){
+    const roomId = id
+    alert(`${FE_URL}/canvas/${roomId}`)
+    return
+  }
+
   useEffect(() => {
     fetchRooms()
   }, [roomModal])
 
   return (
     <div className="min-h-screen bg-gray-50">
+       <motion.div
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                    duration: 1,
+                    ease: 'easeInOut',
+                    type: 'spring',
+                    damping: 10
+                }}
+            >
+              
+            
 
       <NavbarDashboard
         openForm={() => setRoomModal(!roomModal)}
@@ -60,15 +80,27 @@ export default function DashboardPage() {
         onClose={() => setRoomModal(!roomModal)}
       />
 
+      </motion.div>
+      <motion.div
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                    duration: 1,
+                    ease: 'easeInOut',
+                    type: 'spring',
+                    damping: 10
+                }}
+            >
       <main
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.length > 0 && rooms.map((room: room) => (
-            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} onClick={()=>GotoRoom(room.id)}/>
+            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} Invite={()=>CreateInviteLink(room.id)} onClick={()=>GotoRoom(room.id)}/>
           ))}
         </div>
       </main>
+      </motion.div>
     </div>
   )
 }

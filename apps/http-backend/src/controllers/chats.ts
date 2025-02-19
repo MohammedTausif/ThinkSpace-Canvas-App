@@ -31,14 +31,14 @@ export const getChats = async (req: Request, res: Response) => {
 }
 
 
-// http://localhost:4000/api/v1/del/chat (DEL Req)
+// http://localhost:4000/api/v1/chats/delete (DEL Req)
 
 export const deleteShape = async (req: Request, res: Response) => {
     const id = req.body;
     try {
          await prismaClient.shape.delete({
             where: {
-                id
+                id: id
             }
         })
         res.status(200).json({

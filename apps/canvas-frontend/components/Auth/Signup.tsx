@@ -63,6 +63,10 @@ const Signup = () => {
             router.push('/signin') 
         
         } catch (error) {
+            if(!error){
+                console.error("Network Error", error)
+
+            }
             console.error("error signing up", error)
 
         }

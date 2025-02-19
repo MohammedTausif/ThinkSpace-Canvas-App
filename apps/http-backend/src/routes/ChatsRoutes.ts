@@ -1,8 +1,9 @@
 import express, {Router} from 'express';
-import { getChats } from '../controllers/chats';
+import { deleteShape, getChats } from '../controllers/chats';
 
 const router:Router = express.Router()
 
 router.get('/:roomId', getChats)
+router.delete('/delete', deleteShape)
 
 export default router
