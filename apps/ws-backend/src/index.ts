@@ -1,4 +1,4 @@
-import jwt, { } from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { WebSocketServer, WebSocket } from 'ws'
 import { JWT_SECRET } from '@repo/backend-common/config'
 import { prismaClient } from "@repo/db/client"
@@ -77,10 +77,10 @@ wss.on('connection', function connection(ws, request) {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
             try {
-                // if (!roomId || isNaN(Number(roomId))) {
-                //     console.error("Invalid roomId:", roomId);
-                //     return; // Stop execution if roomId is invalid 
-                // }
+                if (!roomId || isNaN(Number(roomId))) {
+                    console.error("Invalid roomId:", roomId);
+                    return; // Stop execution if roomId is invalid 
+                }
                 
                 await prismaClient.shape.create({
                     data: {
