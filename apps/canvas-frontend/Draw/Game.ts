@@ -26,6 +26,7 @@ export class Game {
     private startY = 0;
     private selectedTool: Tool = "circle";
     private currentPencilPoints: { x: number, y: number }[] = []
+    private savedCanvas: ImageData | null = null;
 
     socket: WebSocket;
 
@@ -88,22 +89,32 @@ export class Game {
                 this.ctx.closePath()
             } else if (shape.type === "pencil") {
                 if (shape.points && shape.points.length > 0) {
-                    this.ctx.strokeStyle = "rgba(255, 255,255";
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
-                    for (let i = 1; i < shape.points.length; i++) {
-                        this.ctx.lineTo(shape.points[i].x, shape.points[i].y)
-                    }
-                    this.ctx.stroke();
-                    this.ctx.closePath();
-                }
+                    this.ctx.strokeStyle = "rgba(255,255,255)";
+                    this.drawSmoothLine(shape.points); // <-- CHANGED: Use the smoothing function
+                  }
+                
             }
         })
-
     }
+    private drawSmoothLine(points: { x: number, y: number }[]) {
+        if (points.length < 2) return;
+        this.ctx.beginPath();
+        this.ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 0; i < points.length - 1; i++) {
+          const midX = (points[i].x + points[i + 1].x) / 2;
+          const midY = (points[i].y + points[i + 1].y) / 2;
+          this.ctx.quadraticCurveTo(points[i].x, points[i].y, midX, midY);
+        }
+        this.ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+        this.ctx.stroke();
+        this.ctx.closePath();
+      }
+
     mouseDownHandler = (e: any) => {
         this.clicked = true
         if (this.selectedTool === "pencil") {
+            this.clearCanvas();
+            this.savedCanvas = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
             this.currentPencilPoints = [{ x: e.clientX, y: e.clientY }]
         }
         this.startX = e.clientX;
@@ -140,6 +151,7 @@ export class Game {
                 type: "pencil",
                 points: this.currentPencilPoints
             }
+            this.savedCanvas= null;
         }
         if (!shape) {
             return
@@ -162,18 +174,14 @@ export class Game {
             if (selectedTool === "pencil") {
                 this.currentPencilPoints.push({ x: e.clientX, y: e.clientY });
                 // Clear the canvas and redraw all finalized shapes...
-                this.clearCanvas();
+                if (this.savedCanvas) {
+                    this.ctx.putImageData(this.savedCanvas, 0, 0); // <-- ADDED: Restore finalized canvas snapshot
+                  } else {
+                this.clearCanvas(); 
+            }
                 // ...then redraw the in-progress pencil stroke from currentPencilPoints
-                if (this.currentPencilPoints.length > 0) {
-                    this.ctx.strokeStyle = "rgba(255, 255, 255)";
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(this.currentPencilPoints[0].x, this.currentPencilPoints[0].y);
-                    for (let i = 1; i < this.currentPencilPoints.length; i++) {
-                        this.ctx.lineTo(this.currentPencilPoints[i].x, this.currentPencilPoints[i].y);
-                    }
-                    this.ctx.stroke();
-                    this.ctx.closePath();
-                }
+                this.ctx.strokeStyle= "rgba (255, 255, 255)";
+                this.drawSmoothLine(this.currentPencilPoints)
 
             }
             this.clearCanvas();
