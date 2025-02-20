@@ -14,11 +14,7 @@ type Shape = {
     radius: number;
 } | {
     type: "pencil";
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-
+    points: { x: number, y: number }[];
 }
 export class Game {
     private canvas: HTMLCanvasElement;
@@ -29,6 +25,7 @@ export class Game {
     private startX = 0;
     private startY = 0;
     private selectedTool: Tool = "circle";
+    private currentPencilPoints: { x: number, y: number }[] = []
 
     socket: WebSocket;
 
@@ -89,12 +86,26 @@ export class Game {
                 this.ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2)
                 this.ctx.stroke();
                 this.ctx.closePath()
+            } else if (shape.type === "pencil") {
+                if (shape.points && shape.points.length > 0) {
+                    this.ctx.strokeStyle = "rgba(255, 255,255";
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
+                    for (let i = 1; i < shape.points.length; i++) {
+                        this.ctx.lineTo(shape.points[i].x, shape.points[i].y)
+                    }
+                    this.ctx.stroke();
+                    this.ctx.closePath();
+                }
             }
         })
 
     }
     mouseDownHandler = (e: any) => {
         this.clicked = true
+        if (this.selectedTool === "pencil") {
+            this.currentPencilPoints = [{ x: e.clientX, y: e.clientY }]
+        }
         this.startX = e.clientX;
         this.startY = e.clientY;
     }
@@ -124,15 +135,21 @@ export class Game {
                 centerX: this.startX + radius,
                 centerY: this.startY + radius,
             }
+        } else if (selectedTool === "pencil") {
+            shape = {
+                type: "pencil",
+                points: this.currentPencilPoints
+            }
         }
         if (!shape) {
             return
         }
         this.existingShapes.push(shape);
+        this.clearCanvas();
 
         this.socket.send(JSON.stringify({
             type: "chat",
-            message: JSON.stringify({shape}),
+            message: JSON.stringify({ shape }),
             roomId: this.roomId
         }))
     }
@@ -140,11 +157,30 @@ export class Game {
     mouseMoveHandler = (e: any) => {
 
         if (this.clicked) {
-            const width = e.clientX - this.startX;
-            const height = e.clientY - this.startY;
+            const selectedTool = this.selectedTool;
+
+            if (selectedTool === "pencil") {
+                this.currentPencilPoints.push({ x: e.clientX, y: e.clientY });
+                // Clear the canvas and redraw all finalized shapes...
+                this.clearCanvas();
+                // ...then redraw the in-progress pencil stroke from currentPencilPoints
+                if (this.currentPencilPoints.length > 0) {
+                    this.ctx.strokeStyle = "rgba(255, 255, 255)";
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.currentPencilPoints[0].x, this.currentPencilPoints[0].y);
+                    for (let i = 1; i < this.currentPencilPoints.length; i++) {
+                        this.ctx.lineTo(this.currentPencilPoints[i].x, this.currentPencilPoints[i].y);
+                    }
+                    this.ctx.stroke();
+                    this.ctx.closePath();
+                }
+
+            }
             this.clearCanvas();
             this.ctx.strokeStyle = "rgba(255, 255, 255)"
-            const selectedTool = this.selectedTool;
+            const width = e.clientX - this.startX;
+            const height = e.clientY - this.startY;
+
             console.log(selectedTool)
 
             if (selectedTool === "rect") {

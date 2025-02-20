@@ -44,11 +44,9 @@ const Signup = () => {
                 username: formatErrors.email?._errors[0] || "",
                 password: formatErrors.password?._errors[0] || "",
                 name: formatErrors.name?._errors[0] || "",
-                
             })
             return
         }
-
         setErrors({})
         try {
             setLoading(true)
