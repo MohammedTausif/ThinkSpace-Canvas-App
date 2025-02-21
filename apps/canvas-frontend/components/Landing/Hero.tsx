@@ -111,16 +111,16 @@ const Hero=()=> {
             © 2025 CollabxCanvas. All rights reserved.
           </p>
           <div className="flex space-x-6">
-            <a 
+            <Link
             href="https://github.com" 
             target="_blank"
             className="text-muted-foreground hover:text-primary"
             >
               <Github className="h-5 w-5" />
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-primary">
+            </Link>
+            <Link href="" className="text-muted-foreground hover:text-primary">
               <Linkedin className="h-5 w-5" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

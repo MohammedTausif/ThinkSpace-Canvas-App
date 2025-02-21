@@ -1,4 +1,4 @@
-import { ArrowRight, Binary, Calendar, Delete, DeleteIcon, Drumstick, Link, PaintBucket, Trash, Trash2, Users } from "lucide-react";
+import { ArrowRight, Binary, Calendar, Delete, DeleteIcon, Drumstick, Edit, Edit2, Edit3, Edit3Icon, EditIcon, FileEdit, FolderEdit, Link, LucideDelete, PaintBucket, Pencil, PencilIcon, Trash, Trash2, Users } from "lucide-react";
 
 interface CardProps{
     id: number,
@@ -21,9 +21,9 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                     <h2 className="text-xl font-semibold text-gray-900 flex-1">
                       {slug.toLocaleUpperCase()}
                     </h2>
-                    <button>
-                      <span>
-                        <Trash2 className="w-5 h-5 text-gray-500 "/>
+                    <button className="bg-blue-600 px-4 py-0.5 rounded-full hover:bg-white hover: hover:border-blue-600">
+                      <span className="text-sm text-white  hover:text-gray-800">
+                       Delete
                       </span>
                     </button>
                   </div>
@@ -32,7 +32,7 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                     <div className="flex items-center text-gray-600">
                         <img src={photo} alt="" />
                       <Users className="w-5 h-5 text-blue-600 mr-2" />
-                      <span className="text-sm">Owner: {name}</span>
+                      <span className="text-sm">Created By: {name}</span>
                     </div>
                     
                     <div className="flex items-center text-gray-600">
@@ -49,14 +49,22 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                       </button> 
                     </div>
                   </div>
-                  <div className="mt-6">
+                  <div className="mt-8 flex space-x-4">
+
                     <button
                     onClick={onClick}
-                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
-                    >
-                      <span>Enter Room</span>
-                      <ArrowRight className="w-4 h-4" />
+                     className="w-28 bg-blue-600  font-medium text-white py-2 px-4 rounded-sm hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-1 overflow-hidden">
+                      <span>Room</span>
+                      <ArrowRight className="w-4 h-4 " />
                     </button>
+
+                    <button
+                    onClick={onClick}
+                     className="w-28 bg-white border-2 text-blue-600 border-blue-600  font-medium py-2  px-4 rounded-sm hover:text-gray-300 transition-colors duration-200 flex items-center justify-center space-x-1 overflow-hidden">
+                      <span>Delete</span>
+                      <Trash2 className="size-5 text-blue-600 hover:text-gray-400"/>
+                    </button>
+
                   </div>
                 </div>
               </div>

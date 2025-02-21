@@ -2,7 +2,7 @@
 import CreateRoomModal from '@/components/ui/RoomModal';
 import { FE_URL, HTTP_URL } from '@/config';
 import axios from 'axios';
-import NavbarDashboard from '@/components/Dashboard/Navbar';
+import NavbarDashboard, {  } from '@/components/Dashboard/Navbar';
 import { useEffect, useState } from 'react';
 import RoomCard from '@/components/ui/Card';
 import { useRouter } from 'next/navigation';
@@ -30,8 +30,17 @@ export default function DashboardPage() {
     }
     const roomId= id;
     router.push(`canvas/${roomId}`)
-    console.log("roomId : ",roomId)
   }
+
+   function Logout() {
+    const token = localStorage.getItem('token')
+    try {
+      localStorage.removeItem('token')
+        router.push("/signin")
+    } catch (error) {
+        console.error("logout Failed", error)
+    }
+}
 
   const fetchRooms = async () => {
     try {
@@ -69,11 +78,8 @@ export default function DashboardPage() {
                     damping: 10
                 }}
             >
-              
-            
-
       <NavbarDashboard
-        openForm={() => setRoomModal(!roomModal)}
+      Signout={Logout}
       />
       <CreateRoomModal
         isOpen={roomModal}
