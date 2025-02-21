@@ -91,6 +91,35 @@ export const GetRooms = async (req: Request, res: Response) => {
 
 }
 
+//http//localhost:4000/api/v1/room/update  => POST 
+export const UpdateRoom = async (req: Request, res: Response) => {
+    const { name, roomId } = req.body;
+    const userId = req.userId;
+
+    try {
+        const response = await prismaClient.room.update({
+            where: {
+                id: roomId,
+                adminId: userId
+            },
+            data: {
+                slug: name
+            }
+        })
+        res.status(200).json({
+            message: "Successfully Updated Name",
+            name: response.slug
+        })
+    } catch (error) {
+        res.json({
+            message: "Error Updating Room",
+            error: error
+        })
+    }
+}
+
+
+
 //http://localhost:4000/api/v1/room/:roomId => GET (Req for accessing Rooms using roomId)
 export const FetchRooms = async (req: Request, res: Response) => {
     const roomId = req.params.roomId
