@@ -15,6 +15,12 @@ type Shape = {
 } | {
     type: "pencil";
     points: { x: number, y: number }[];
+} | {
+    type: "text";                  
+    text: string;                   
+    x: number;                    
+    y: number;  
+    // fontSize: number                    
 }
 export class Game {
     private canvas: HTMLCanvasElement;
@@ -24,9 +30,9 @@ export class Game {
     private clicked: boolean;
     private startX = 0;
     private startY = 0;
-    private selectedTool: Tool = "circle";
+    private selectedTool: Tool = "select";
     private currentPencilPoints: { x: number, y: number }[] = []
-    private savedCanvas: ImageData | null = null;
+    
 
     socket: WebSocket;
 
@@ -44,9 +50,7 @@ export class Game {
 
     destroy() {
         this.canvas.removeEventListener("mousedown", this.mouseDownHandler)
-
         this.canvas.removeEventListener("mouseup", this.mouseUpHandler)
-
         this.canvas.removeEventListener("mousemove", this.mouseMoveHandler)
     }
 
@@ -64,7 +68,6 @@ export class Game {
     initHandlers() {
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data)
-
             if (data.type == "chat") {
                 const parsedData = JSON.parse(data.message)
                 this.existingShapes.push(parsedData.shape)
@@ -78,7 +81,7 @@ export class Game {
         this.ctx.fillStyle = "rgba(0,0,0)";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.existingShapes.map((shape) => {
+        this.existingShapes.forEach((shape, index) => {
             if (shape.type == "rect") {
                 this.ctx.strokeStyle = "rgba(255, 255, 255)";
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height)
@@ -93,6 +96,11 @@ export class Game {
                     this.drawSmoothLine(shape.points); // <-- CHANGED: Use the smoothing function
                   }
                 
+            }
+            else if (shape.type === "text") {  // <-- ADDED: Render text shapes
+                this.ctx.fillStyle = "rgba(255,255,255)";
+                this.ctx.font = "16px Arial";  // You can customize font style/size as needed
+                this.ctx.fillText(shape.text, shape.x, shape.y);
             }
         })
     }
@@ -112,9 +120,10 @@ export class Game {
 
     mouseDownHandler = (e: any) => {
         this.clicked = true
-        if (this.selectedTool === "pencil") {
-            this.clearCanvas();
-            this.savedCanvas = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        if (this.selectedTool === "text") {  // <-- ADDED: For text tool
+            this.startX = e.clientX;
+            this.startY = e.clientY;
+        } else if (this.selectedTool === "pencil") {
             this.currentPencilPoints = [{ x: e.clientX, y: e.clientY }]
         }
         this.startX = e.clientX;
@@ -151,49 +160,49 @@ export class Game {
                 type: "pencil",
                 points: this.currentPencilPoints
             }
-            this.savedCanvas= null;
+   
+        }
+        else if (selectedTool === "text"){
+            const userText = prompt("Enter text:");  // You can replace prompt with a custom input method if needed
+            if (userText && userText.trim() !== "") {
+                shape = {
+                    type: "text",
+                    text: userText,
+                    x: this.startX,
+                    y: this.startY
+                };
+            }
         }
         if (!shape) {
             return
         }
         this.existingShapes.push(shape);
-        this.clearCanvas();
-
+        
         this.socket.send(JSON.stringify({
             type: "chat",
             message: JSON.stringify({ shape }),
             roomId: this.roomId
         }))
+        this.clearCanvas();
     }
 
     mouseMoveHandler = (e: any) => {
 
         if (this.clicked) {
-            const selectedTool = this.selectedTool;
-
-            if (selectedTool === "pencil") {
+            if (this.selectedTool === "pencil") {
                 this.currentPencilPoints.push({ x: e.clientX, y: e.clientY });
-                // Clear the canvas and redraw all finalized shapes...
-                if (this.savedCanvas) {
-                    this.ctx.putImageData(this.savedCanvas, 0, 0); // <-- ADDED: Restore finalized canvas snapshot
-                  } else {
                 this.clearCanvas(); 
-            }
-                // ...then redraw the in-progress pencil stroke from currentPencilPoints
                 this.ctx.strokeStyle= "rgba (255, 255, 255)";
                 this.drawSmoothLine(this.currentPencilPoints)
-
             }
+            else{
             this.clearCanvas();
             this.ctx.strokeStyle = "rgba(255, 255, 255)"
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
-
-            console.log(selectedTool)
-
-            if (selectedTool === "rect") {
+            if (this.selectedTool === "rect") {
                 this.ctx.strokeRect(this.startX, this.startY, width, height);
-            } else if (selectedTool === "circle") {
+            } else if (this.selectedTool === "circle") {
                 const radius = Math.max(width, height) / 2;
                 const centerX = this.startX + radius;
                 const centerY = this.startY + radius;
@@ -202,15 +211,18 @@ export class Game {
                 this.ctx.stroke();
                 this.ctx.closePath();
             }
+            else if(this.selectedTool === "text"){
+                this.clearCanvas();
+                this.ctx.fillStyle = "rgba(255,255,255)";
+                this.ctx.font = "16px Arial";
+                this.ctx.fillText("Your Text Here", this.startX, this.startY);
+            }
+             }
         }
     }
-
-
     initMouseHandlers() {
         this.canvas.addEventListener("mousedown", this.mouseDownHandler);
         this.canvas.addEventListener("mouseup", this.mouseUpHandler);
         this.canvas.addEventListener("mousemove", this.mouseMoveHandler)
     }
-
-
 }

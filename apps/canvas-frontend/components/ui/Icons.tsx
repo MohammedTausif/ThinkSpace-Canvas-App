@@ -3,11 +3,12 @@ import { ReactNode } from "react";
 
 export interface IconProps{
     icon: ReactNode,
-    onClick: ()=> void
+    onClick: ()=> void,
+    className?: any
 }
-export function IconModal ({icon, onClick}: {icon: ReactNode,onClick: ()=> void }){
+export function IconModal ({icon, onClick, className}: IconProps){
 
-    return <div className="pointer rounded-full boer p-2" onClick={onClick}>
+    return <div className={`pointer rounded-full  p-2.5 ,${className}`} onClick={onClick}>
             {icon}
     </div>
 

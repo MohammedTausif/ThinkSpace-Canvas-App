@@ -1,4 +1,4 @@
-import { ArrowRight, Calendar, Link, Users } from "lucide-react";
+import { ArrowRight, Binary, Calendar, Delete, DeleteIcon, Drumstick, Link, PaintBucket, Trash, Trash2, Users } from "lucide-react";
 
 interface CardProps{
     id: number,
@@ -21,6 +21,11 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                     <h2 className="text-xl font-semibold text-gray-900 flex-1">
                       {slug.toLocaleUpperCase()}
                     </h2>
+                    <button>
+                      <span>
+                        <Trash2 className="w-5 h-5 text-gray-500 "/>
+                      </span>
+                    </button>
                   </div>
                   
                   <div className="space-y-3">

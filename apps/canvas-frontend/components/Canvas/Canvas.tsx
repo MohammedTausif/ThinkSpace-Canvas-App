@@ -8,12 +8,12 @@ interface CanvasProps{
     socket: WebSocket
 }
 
-export type Tool= "circle" | "rect" | "pencil";
+export type Tool= "circle" | "rect" | "pencil" | "text" | "eraser"| "select";
 
 export function Canvas({ roomId, socket }: CanvasProps){
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [game, setGame]= useState<Game>();
-    const [selectedTool, setSelectedTool] = useState<Tool>("circle")
+    const [selectedTool, setSelectedTool] = useState<Tool>("select")
 
 
     useEffect(()=>{
