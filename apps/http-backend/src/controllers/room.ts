@@ -118,7 +118,28 @@ export const UpdateRoom = async (req: Request, res: Response) => {
     }
 }
 
-
+//http//localhost:4000/api/v1/room/delete  => POST
+export const DeleteRoom = async (req: Request, res: Response) => {
+    const roomId = req.body;
+    const userId = req.userId;
+    try {
+        const response = await prismaClient.room.delete({
+            where: {
+                id: roomId,
+                adminId: userId
+            }
+        })
+        res.json({
+            message: "Room Deleted",
+            name: response.slug
+        })
+    } catch (error) {
+        res.json({
+            message: "Error Deleting Room",
+            error: error
+        })
+    }
+}
 
 //http://localhost:4000/api/v1/room/:roomId => GET (Req for accessing Rooms using roomId)
 export const FetchRooms = async (req: Request, res: Response) => {
