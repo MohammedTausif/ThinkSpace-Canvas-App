@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const [roomModal, setRoomModal] = useState<boolean>(false)
   const [rooms, setRooms] = useState<room[]>([])
 
-   function GotoRoom (id: number){
+   const GotoRoom= (id: number)=>{
     if(isNaN (id)){
       console.log("roomId is NaN")
       return 
@@ -40,6 +40,16 @@ export default function DashboardPage() {
     } catch (error) {
         console.error("logout Failed", error)
     }
+}
+
+const editRoom = async (id: number)=>{
+  axios.put(`${HTTP_URL}/api/v1/room/update`,{
+    data: {
+      slug: ""
+    }
+  })
+
+
 }
 
   const fetchRooms = async () => {
@@ -61,7 +71,15 @@ export default function DashboardPage() {
     alert(`${FE_URL}/canvas/${roomId}`)
     return
   }
-
+  const deleteRoom = (id:number)=>{
+    const roomId = id
+    axios.delete(`${HTTP_URL}/api/v1/room/delete`, {
+      data:{
+        id: roomId
+      }
+    })
+  }
+  
   useEffect(() => {
     fetchRooms()
   }, [roomModal])
@@ -102,7 +120,7 @@ export default function DashboardPage() {
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.length > 0 && rooms.map((room: room) => (
-            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} Invite={()=>CreateInviteLink(room.id)} onClick={()=>GotoRoom(room.id)}/>
+            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} Invite={()=>CreateInviteLink(room.id)} onClick={()=>GotoRoom(room.id)} updateRoom={()=>editRoom(room.id)}/>
           ))}
         </div>
       </main>

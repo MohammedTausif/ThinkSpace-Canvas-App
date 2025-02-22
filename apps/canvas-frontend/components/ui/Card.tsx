@@ -9,9 +9,10 @@ interface CardProps{
     photo? : any,
     onClick: (id: any)=>void,
     Invite : (id: any)=> void,
+    updateRoom : (id:any)=> void
 
 }
-export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick, Invite }: CardProps){
+export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick, Invite, updateRoom }: CardProps){
     return <div
                 key={id}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
@@ -59,7 +60,7 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                     </button>
 
                     <button
-                    onClick={onClick}
+                    onClick={updateRoom}
                      className="w-[6rem] bg-white border-[1px] text-blue-600 border-blue-600  font-medium py-2  px-4 rounded-sm hover:text-white hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center space-x-1 overflow-hidden">
                       <span>Edit</span>
                       <Pencil className="size-4 "/>
