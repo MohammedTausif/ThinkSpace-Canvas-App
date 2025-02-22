@@ -31,9 +31,10 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                   
                   <div className="space-y-3">
                     <div className="flex items-center text-gray-600">
-                        <img src={photo} alt="" />
-                      <Users className="w-5 h-5 text-blue-600 mr-2" />
-                      <span className="text-sm">Created By: {name}</span>
+                        {photo? <img className="rounded-full size-5  relative"
+                        src={photo} alt="" /> : <Users className="w-5 h-5 text-blue-600 mr-2" />}
+                      
+                      <span className="text-sm ">Created By: {name}</span>
                     </div>
                     
                     <div className="flex items-center text-gray-600">

@@ -120,7 +120,11 @@ const editRoom = async (id: number)=>{
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.length > 0 && rooms.map((room: room) => (
-            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} Invite={()=>CreateInviteLink(room.id)} onClick={()=>GotoRoom(room.id)} updateRoom={()=>editRoom(room.id)}/>
+            <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name} 
+            Invite={()=>CreateInviteLink(room.id)} 
+            onClick={()=>GotoRoom(room.id)} 
+            updateRoom={()=>editRoom(room.id)}
+            />
           ))}
         </div>
       </main>
