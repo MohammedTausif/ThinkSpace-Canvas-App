@@ -10,8 +10,8 @@ interface CardProps{
     onClick: (id: any)=>void,
     Invite : (id: any)=> void,
     updateRoom : (id:any)=> void
-
 }
+
 export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick, Invite, updateRoom }: CardProps){
     return <div
                 key={id}

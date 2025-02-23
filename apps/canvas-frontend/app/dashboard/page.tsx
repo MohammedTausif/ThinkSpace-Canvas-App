@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import RoomCard from '@/components/ui/Card';
 import { useRouter } from 'next/navigation';
 import {motion} from 'framer-motion'
+import { Plus } from 'lucide-react';
+import DashboardHeader from '@/components/Dashboard/Header';
 
 interface room {
   id: number,
@@ -48,8 +50,6 @@ const editRoom = async (id: number)=>{
       slug: ""
     }
   })
-
-
 }
 
   const fetchRooms = async () => {
@@ -63,7 +63,6 @@ const editRoom = async (id: number)=>{
     } catch (error) {
       console.error("Error fetchung rooms: ", error)
     }
-
   }
 
   function CreateInviteLink (id: number){
@@ -103,7 +102,19 @@ const editRoom = async (id: number)=>{
         isOpen={roomModal}
         onClose={() => setRoomModal(!roomModal)}
       />
-
+      <div className='flex justify-between bg-transparent'>
+        <div>
+       <DashboardHeader/>
+        </div>
+        <div>
+        <button
+                    // onClick={""}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm">
+                    <Plus className="w-5 h-5 mr-2" />
+                    Create Room
+                </button>
+        </div>
+      </div>
       </motion.div>
       <motion.div
                 initial={{ y: -50, opacity: 0 }}
@@ -127,6 +138,7 @@ const editRoom = async (id: number)=>{
             />
           ))}
         </div>
+      
       </main>
       </motion.div>
     </div>
