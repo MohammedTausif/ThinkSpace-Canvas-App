@@ -9,10 +9,10 @@ interface CardProps{
     photo? : any,
     onClick: (id: any)=>void,
     Invite : (id: any)=> void,
-    updateRoom : (id:any)=> void
+    DeleteRoom : (id:any)=> void
 }
 
-export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick, Invite, updateRoom }: CardProps){
+export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, onClick, Invite, DeleteRoom }: CardProps){
     return <div
                 key={id}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
@@ -21,12 +21,7 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                   <div className="flex justify-between items-start mb-4 ">
                     <h2 className=" text-xl font-semibold text-gray-900 flex-1">
                       {slug.toLocaleUpperCase()}
-                     
                     </h2>
-
-                    <button className="" >
-                     <Trash2 className="size-4 text-gray-500 "/>
-                    </button>
                   </div>
                   
                   <div className="space-y-3">
@@ -44,14 +39,14 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
   
                     <div className="flex items-center text-gray-600">
                       {/* <Users className="w-5 h-5 text-blue-600 mr-2" /> */}
-                      <Link className="w-5 h-5 text-blue-600"/>
-                    <button onClick={Invite}>
+                      <Trash2 className="w-5 h-5 text-blue-600"/>
+                    <button onClick={DeleteRoom}>
                        <span className="text-sm pl-2 cursor-pointer hover:text-blue-600 hover:underline"
-                      > Invite to Collaborate</span>
+                      > Delete Room </span>
                       </button> 
                     </div>
                   </div>
-                  <div className="mt-8 flex space-x-4">
+                  <div className="mt-7 flex space-x-4">
 
                     <button
                     onClick={onClick}
@@ -61,10 +56,10 @@ export default function RoomCard({id, slug ,createdAt,  name, photo, adminId, on
                     </button>
 
                     <button
-                    onClick={updateRoom}
+                    onClick={Invite}
                      className="w-[6rem] bg-white border-[1px] text-blue-600 border-blue-600  font-medium py-2  px-4 rounded-sm hover:text-white hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center space-x-1 overflow-hidden">
-                      <span>Edit</span>
-                      <Pencil className="size-4 "/>
+                      <Link className="size-4 "/>
+                      <span>Invite</span>
                     </button>
 
                   </div>

@@ -1,6 +1,6 @@
 import { initDraw } from "@/Draw/draw";
 import { useEffect, useRef, useState } from "react";
-import Topbar from "../Topbar/Toolbar";
+import Topbar, { getCursorStyle } from "../Topbar/Toolbar";
 import { Game } from "@/Draw/Game";
 
 interface CanvasProps{
@@ -35,7 +35,7 @@ export function Canvas({ roomId, socket }: CanvasProps){
 
 
     return <div className=" h-[100vh] overflow-hidden  ">
-        <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight} ></canvas>
+        <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight} style={{ cursor: getCursorStyle({selectedTool})}} ></canvas>
         <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool}/>
     </div>
 

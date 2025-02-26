@@ -13,17 +13,16 @@ interface CreateRoomModalProps {
 }
 export default function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
     const router = useRouter()
-    const [closeModal, setCloseModal] = useState(false)
     const [error, setError] = useState<Record<string, string>>({})
     const [newRoomTitle, setNewRoomTitle] = useState<CreateRoomInput>({
         name: ""
     });
 
-    
+
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         setNewRoomTitle({ ...newRoomTitle, [e.target.name]: e.target.value })
     }
-    
+
     const createRoom = CreateRoomSchema.safeParse(newRoomTitle)
 
     async function handleSubmit() {
@@ -33,23 +32,22 @@ export default function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProp
                 name: formatErrors.name?._errors[0] || "",
             })
             return
-            
+
         }
         setError({})
         try {
-            const RoomName = createRoom.data.name
-            console.log("Room : ",RoomName)
-            await axios.post(`${HTTP_URL}/api/v1/room`, {
-                name: RoomName
-            },{
-                headers:{
-                    Authorization: localStorage.getItem('token')
-                }
+            const roomName = createRoom.data.name
+            const response = await axios.post(`${HTTP_URL}/api/v1/room`, 
+                { name: roomName },
+                 {
+                    headers: {
+                        Authorization: localStorage.getItem('token')
+                },
             })
-            alert("Room Created")
-            router.push('/canvas/:roomId')
-            
-           
+            // alert("Room Created")
+            if(onClose){
+                onClose()
+            };
 
         } catch (error) {
             console.error(error)

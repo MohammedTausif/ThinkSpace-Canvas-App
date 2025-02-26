@@ -1,8 +1,7 @@
 "use client"
 import { HTTP_URL, WS_URL } from "@/config";
-import { CanvasHTMLAttributes, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
-import FindRoom from './FindRoom'
 import axios from "axios";
 
 export  function RoomCanvas(
