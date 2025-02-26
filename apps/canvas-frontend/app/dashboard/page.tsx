@@ -117,17 +117,6 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
-      </motion.div>
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{
-          duration: 1,
-          ease: 'easeInOut',
-          type: 'spring',
-          damping: 10
-        }}
-      >
         <main
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div
