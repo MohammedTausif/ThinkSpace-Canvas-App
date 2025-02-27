@@ -3,11 +3,13 @@ import { CreateRoomSchema } from "@repo/common/types";
 import { prismaClient } from "@repo/db/client";
 import jwt from 'jsonwebtoken'
 import { Request, Response } from "express";
+import { error } from "console";
+import { json } from "stream/consumers";
 
 
 //http://localhost:4000/api/v1/rooms
 export const getRoomByAdminId = async (req: Request, res: Response) => {
-    const userId = req.body.userId
+    const userId = req.userId
     try {
         const rooms = await prismaClient.room.findMany({
             where: {
@@ -34,14 +36,8 @@ export const getRoomByAdminId = async (req: Request, res: Response) => {
             status: 'error',
             message: "Error Fetching Rooms",
             error: error,
-
         })
-
-
     }
-
-
-
 }
 
 //http://localhost:4000/api/v1/room => POST (Req for Creating a Room)

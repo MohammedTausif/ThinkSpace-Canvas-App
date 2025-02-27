@@ -24,7 +24,7 @@ export default function DashboardHeader({searchQuery, setSearchQuery}: any){
             placeholder="Search Rooms..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-[26rem] flex-1 bg-white px-3  py-1.5 text-gray-700 bg-transparent border border-l-0 border-blue-100 rounded-lg rounded-l-none focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+            className="w-full lg:w-[40rem] sm:w-[26rem] flex-1 bg-white px-3  py-1.5 text-gray-700 bg-transparent border border-l-0 border-blue-100 rounded-lg rounded-l-none focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
           />
          
         </div>

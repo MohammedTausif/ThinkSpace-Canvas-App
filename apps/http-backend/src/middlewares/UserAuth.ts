@@ -13,10 +13,8 @@ export function UserMiddleware (req: Request, res:Response, next : NextFunction)
     }
 try{
     if( decoded){
-       
         req.userId = (decoded as JwtPayload).userId;
         next()
-
     }else{
         res.status(403).json({
             message: "Unauthorized"
