@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import RoomCard from '@/components/ui/Card';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion'
-import { Plus } from 'lucide-react';
+import { PawPrint, Plus, ServerOff } from 'lucide-react';
 import DashboardHeader from '@/components/Dashboard/Header';
 
 interface room {
@@ -63,20 +63,16 @@ export default function DashboardPage() {
     alert(`${FE_URL}/canvas/${roomId}`)
     return
   }
-  const deleteRoom = async (id: number) => {
+
+  async function deleteRoom(id: number) {
     const roomId = id
-    try {
+    try{
       const response = await axios.delete(`${HTTP_URL}/api/v1/room/delete`, {
-        data: {
-          roomId
-        },
-        headers: {
-          Authorization: localStorage.getItem("token")
-        }
+        data: { roomId },
+        headers: { Authorization: localStorage.getItem("token") },
       })
-      console.log("delete DATA :", response.data)
       setRooms(rooms.filter((room) => room.id !== id))
-    } catch (error) {
+    }catch(error) {
       console.error(error)
     }
   }
@@ -117,10 +113,14 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+        {
+          rooms.length == 0 && <div className=' mt-[15%] w-full flex items-center justify-center text-gray-300  text-3xl font-bold gap-2'> No Rooms Exist <ServerOff className='size-6'/></div>
+        }
         <main
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
             {rooms.length > 0 && rooms.map((room: room) => (
               <RoomCard key={room.id} id={room.id} photo={room.admin.photo} slug={room.slug} adminId={room.adminId} createdAt={room.createdAt} name={room.admin.name}
                 Invite={() => CreateInviteLink(room.id)}

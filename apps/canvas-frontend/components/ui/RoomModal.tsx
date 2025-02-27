@@ -45,6 +45,7 @@ export default function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProp
                 },
             })
             // alert("Room Created")
+            setNewRoomTitle({name: ""})
             if(onClose){
                 onClose()
             };
@@ -95,6 +96,11 @@ export default function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProp
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Enter room title"
                                 required
+                                onKeyDown={async (e)=>{
+                                    if (e.key === "Enter"){
+                                        handleSubmit()
+                                    }
+                                }}
                             />
                             {error && <p className='absolute mt-1 text-sm text-red-600'>{error.name}</p>}
                         </div>
