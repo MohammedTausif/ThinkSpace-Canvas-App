@@ -226,3 +226,5 @@ export class Game {
         this.canvas.addEventListener("mousemove", this.mouseMoveHandler)
     }
 }
+
+

@@ -8,7 +8,7 @@ async function CanvasPage({params}:{
     }
 }) {
     const roomId = (await params).roomId
-    // const token = await params.token
+
 
 
     return <RoomCanvas roomId={roomId}></RoomCanvas>

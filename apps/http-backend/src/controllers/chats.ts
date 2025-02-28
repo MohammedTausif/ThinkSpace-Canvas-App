@@ -30,7 +30,6 @@ export const getChats = async (req: Request, res: Response) => {
 
 }
 
-
 // http://localhost:4000/api/v1/chats/delete (DEL Req)
 
 export const deleteShape = async (req: Request, res: Response) => {

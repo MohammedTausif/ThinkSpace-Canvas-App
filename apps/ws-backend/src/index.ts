@@ -76,12 +76,44 @@ wss.on('connection', function connection(ws, request) {
         if (parsedData.type === "chat") {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
+
+            let msgObj = {};
+            try {
+                msgObj = JSON.parse(message);
+            } catch (error) {
+                console.error(error)
+            }
+            if ((msgObj as any).erased && (msgObj as any).shapeId) {
+                const shapeId = (msgObj as any).shapeId;
+                try {
+                    await prismaClient.shape.delete({
+                        where: { id: Number((msgObj as any).shapeId) }
+                    });
+                    console.log("shape erased with id :", shapeId)
+
+                } catch (error) {
+                    console.error("Error Erasing Shape", error)
+                }
+                // Broadcast the erase event to all users in the room
+                users.forEach(user => {
+                    if (user.rooms.includes(roomId)) {
+                        user.ws.send(JSON.stringify({
+                            type: "chat",
+                            message: message,
+                            roomId
+                        }))
+                    }
+                });
+                return
+            }
+
+            //for creating shape events
             try {
                 if (!roomId || isNaN(Number(roomId))) {
                     console.error("Invalid roomId:", roomId);
                     return; // Stop execution if roomId is invalid 
                 }
-                
+
                 await prismaClient.shape.create({
                     data: {
                         roomId: Number(roomId),
@@ -90,19 +122,18 @@ wss.on('connection', function connection(ws, request) {
                     }
                 });
                 console.log("shape saved in DB ")
-            
+                users.forEach(user => {
+                    if (user.rooms.includes(roomId)) {
+                        user.ws.send(JSON.stringify({
+                            type: "chat",
+                            message: message,
+                            roomId
+                        }))
+                    }
+                })
             } catch (error) {
                 console.error("error sending message :", error)
             }
-            users.forEach(user => {
-                if (user.rooms.includes(roomId)) {
-                    user.ws.send(JSON.stringify({
-                        type: "chat",
-                        message: message,
-                        roomId
-                    }))
-                }
-            })
         }
     });
 
