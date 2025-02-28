@@ -29,7 +29,7 @@ export default function Topbar({ selectedTool, setSelectedTool }: TopbarProps) {
           <IconModal icon={<Baseline  className={`${selectedTool === "text"? "text-black": ""}`}/>} onClick={()=>setSelectedTool("text")}  />
           <IconModal icon={<EraserIcon className={`${selectedTool === "eraser"? "text-black": ""}`} />} onClick={()=>setSelectedTool("eraser")} />
           <IconModal icon={<MousePointerClickIcon className={`${selectedTool === "pencil"? "text-black": ""}`} />} onClick={()=>setSelectedTool("select")}  />
-          <IconModal icon={<MoveDown  className={`${selectedTool === "pencil"? "text-black": ""}`}/>} onClick={()=>setSelectedTool("select")}  />
+          <IconModal icon={<MoveDown  className={`${selectedTool === "arrow"? "text-black": ""}`}/>} onClick={()=>setSelectedTool("arrow")}  />
         </div>
     </div>
 }
