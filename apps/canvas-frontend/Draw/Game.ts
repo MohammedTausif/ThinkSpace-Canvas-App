@@ -20,7 +20,6 @@ type Shape = {
     text: string;                   
     x: number;                    
     y: number;  
-    // fontSize: number                    
 } | {
     type : "arrow";
     startX : number;
@@ -28,12 +27,12 @@ type Shape = {
     endX: number;
     endY: number;
 } | { 
-    // RHOMBUS: New rhombus shape type.
+    
     type: "rhombus";
-    x: number;       // Top-left corner of bounding box.
+    x: number;       
     y: number;
-    width: number;   // Width of bounding box.
-    height: number;  // Height of bounding box.
+    width: number;   
+    height: number;  
 }
 
 export class Game {
@@ -42,12 +41,20 @@ export class Game {
     private existingShapes: Shape[];
     private roomId: string;
     private clicked: boolean;
-    private startX = 0;
-    private startY = 0;
+    private startX = 0;  // Stored in world coordinates.
+    private startY = 0;  // Stored in world coordinates.
     private selectedTool: Tool = "select";
     private currentPencilPoints: { x: number, y: number }[] = [];
     
     socket: WebSocket;
+
+    // 🎯 Panning & Zooming Variables
+    private offsetX = 0;  // X translation
+    private offsetY = 0;  // Y translation
+    private scale = 1;     // Zoom level
+    private isPanning = false;
+    private panStartX = 0;
+    private panStartY = 0;
 
     constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
         this.canvas = canvas;
@@ -59,7 +66,50 @@ export class Game {
         this.init();
         this.initHandlers();
         this.initMouseHandlers();
+        this.initPanZoomHandlers();
     }
+    
+    // Initialize Panning & Zooming
+    private initPanZoomHandlers() {
+        this.canvas.addEventListener("wheel", this.handleZoom);
+        this.canvas.addEventListener("mousedown", this.startPan);
+        this.canvas.addEventListener("mousemove", this.panCanvas);
+        this.canvas.addEventListener("mouseup", this.stopPan);
+        this.canvas.addEventListener("mouseleave", this.stopPan);
+    }
+
+    private handleZoom = (event: WheelEvent) => {
+        event.preventDefault();
+        const zoomSpeed = 0.05;
+        const rect = this.canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+        const zoomFactor = event.deltaY < 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
+        const newScale = this.scale * zoomFactor;
+        if (newScale < 0.5 || newScale > 3) return;
+        this.offsetX = mouseX - ((mouseX - this.offsetX) * zoomFactor);
+        this.offsetY = mouseY - ((mouseY - this.offsetY) * zoomFactor);
+        this.scale = newScale;
+        this.clearCanvas();
+    };
+
+    private startPan = (event: MouseEvent) => {
+        if (this.selectedTool !== "select") return;
+        this.isPanning = true;
+        this.panStartX = event.clientX - this.offsetX;
+        this.panStartY = event.clientY - this.offsetY;
+    };
+
+    private panCanvas = (event: MouseEvent) => {
+        if (!this.isPanning) return;
+        this.offsetX = event.clientX - this.panStartX;
+        this.offsetY = event.clientY - this.panStartY;
+        this.clearCanvas();
+    };
+
+    private stopPan = () => {
+        this.isPanning = false;
+    };
 
     destroy() {
         this.canvas.removeEventListener("mousedown", this.mouseDownHandler);
@@ -88,14 +138,21 @@ export class Game {
         }
     }
 
+    // Clear canvas: Reset transform, clear, then reapply pan/zoom transform.
     clearCanvas() {
+        if (this.ctx.resetTransform) {
+            this.ctx.resetTransform();
+        } else {
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = "rgba(0,0,0)";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
 
         this.existingShapes.forEach((shape) => {
+            this.ctx.strokeStyle = "rgba(255, 255, 255)";
             if (shape.type == "rect") {
-                this.ctx.strokeStyle = "rgba(255, 255, 255)";
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
             } else if (shape.type === "circle") {
                 this.ctx.beginPath();
@@ -103,27 +160,19 @@ export class Game {
                 this.ctx.stroke();
                 this.ctx.closePath();
             } else if (shape.type === "pencil") {
-                if (shape.points && shape.points.length > 0) {
-                    this.ctx.strokeStyle = "rgba(255,255,255)";
-                    this.drawSmoothLine(shape.points);
-                }
+                this.drawSmoothLine(shape.points);
             } else if (shape.type === "text") {
                 this.ctx.fillStyle = "rgba(255,255,255)";
                 this.ctx.font = "16px Arial";
                 this.ctx.fillText(shape.text, shape.x, shape.y);
             } else if (shape.type === "arrow") {
-                this.ctx.strokeStyle = "rgba(255,255,255)";
                 this.drawArrow(shape.startX, shape.startY, shape.endX, shape.endY);
-            }
-           
-            // RHOMBUS: Render rhombus shape.
-            else if (shape.type === "rhombus") {
-                this.ctx.strokeStyle = "rgba(255,255,255)";
+            } else if (shape.type === "rhombus") {
                 this.drawRhombus(shape.x, shape.y, shape.width, shape.height);
             }
         });
     }
-    
+
     private drawSmoothLine(points: { x: number, y: number }[]) {
         if (points.length < 2) return;
         this.ctx.beginPath();
@@ -139,13 +188,11 @@ export class Game {
     }
 
     private drawArrow(startX: number, startY: number, endX: number, endY: number) {
-        // Draw main line.
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);
         this.ctx.stroke();
 
-        // Calculate the angle of the line.
         const angle = Math.atan2(endY - startY, endX - startX);
         const headLength = 10;
         const arrowX1 = endX - headLength * Math.cos(angle - Math.PI / 6);
@@ -160,7 +207,7 @@ export class Game {
         this.ctx.lineTo(arrowX2, arrowY2);
         this.ctx.stroke();
     }
-    
+
     private drawRhombus(x: number, y: number, width: number, height: number) {
         const topX = x + width / 2;
         const topY = y;
@@ -180,34 +227,30 @@ export class Game {
         this.ctx.stroke();
     }
 
+    // Convert mouse event coordinates to world coordinates.
+    private getWorldCoordinates(e: any): { x: number, y: number } {
+        const rect = this.canvas.getBoundingClientRect();
+        const canvasX = e.clientX - rect.left;
+        const canvasY = e.clientY - rect.top;
+        return {
+            x: (canvasX - this.offsetX) / this.scale,
+            y: (canvasY - this.offsetY) / this.scale
+        };
+    }
+
     mouseDownHandler = (e: any) => {
-                this.clicked = true;
-                const rect = this.canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                if (this.selectedTool === "rhombus"){
-                    this.startX = x;
-                    this.startY = y;
-                }
-                if (this.selectedTool === "arrow") {
-                    this.startX = e.clientX;
-                    this.startY = e.clientY;
-                }
-                if (this.selectedTool === "text") {
-                    this.startX = e.clientX;
-                    this.startY = e.clientY;
-                } else if (this.selectedTool === "pencil") {
-                    this.currentPencilPoints = [{ x: e.clientX, y: e.clientY }]
-                }
-                this.startX = e.clientX;
-                this.startY = e.clientY;
-            }
+        this.clicked = true;
+        const { x, y } = this.getWorldCoordinates(e);
+        this.startX = x; 
+        this.startY = y; 
+        if(this.selectedTool === "pencil"){
+            this.currentPencilPoints = [{x , y}]
+        }
+    };
 
     mouseUpHandler = (e: any) => {
         this.clicked = false;
-        const rect = this.canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const { x, y } = this.getWorldCoordinates(e); // COORD FIX
         const selectedTool = this.selectedTool;
         let shape: Shape | null = null;
         if (selectedTool === "rect") {
@@ -217,8 +260,8 @@ export class Game {
                 type: "rect",
                 x: this.startX,
                 y: this.startY,
-                height,
-                width
+                width,
+                height
             };
         } else if (selectedTool === "circle") {
             const width = x - this.startX;
@@ -226,7 +269,7 @@ export class Game {
             const radius = Math.max(width, height) / 2;
             shape = {
                 type: "circle",
-                radius: radius,
+                radius,
                 centerX: this.startX + radius,
                 centerY: this.startY + radius,
             };
@@ -253,11 +296,7 @@ export class Game {
                 endX: x,
                 endY: y
             };
-        }
-        
-        // RHOMBUS: New branch for rhombus.
-        else if (selectedTool === "rhombus") {
-            // Use the bounding box defined by start and current point.
+        } else if (selectedTool === "rhombus") {
             const width = x - this.startX;
             const height = y - this.startY;
             shape = {
@@ -272,7 +311,6 @@ export class Game {
             return;
         }
         this.existingShapes.push(shape);
-        
         this.socket.send(JSON.stringify({
             type: "chat",
             message: JSON.stringify({ shape }),
@@ -283,9 +321,7 @@ export class Game {
 
     mouseMoveHandler = (e: any) => {
         if (this.clicked) {
-            const rect = this.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const { x, y } = this.getWorldCoordinates(e); // COORD FIX
             if (this.selectedTool === "pencil") {
                 this.currentPencilPoints.push({ x, y });
                 this.clearCanvas();
@@ -296,9 +332,11 @@ export class Game {
                 this.ctx.strokeStyle = "rgba(255, 255, 255)";
                 const width = x - this.startX;
                 const height = y - this.startY;
+
                 if (this.selectedTool === "rect") {
                     this.ctx.strokeRect(this.startX, this.startY, width, height);
-                } else if (this.selectedTool === "circle") {
+                }
+                else if (this.selectedTool === "circle") {
                     const radius = Math.max(width, height) / 2;
                     const centerX = this.startX + radius;
                     const centerY = this.startY + radius;
@@ -306,16 +344,14 @@ export class Game {
                     this.ctx.arc(centerX, centerY, Math.abs(radius), 0, Math.PI * 2);
                     this.ctx.stroke();
                     this.ctx.closePath();
-                }
+                } 
                 else if (this.selectedTool === "arrow") {
                     this.drawArrow(this.startX, this.startY, x, y);
                 }
-                
-                // RHOMBUS: Preview drawing of a rhombus.
                 else if (this.selectedTool === "rhombus") {
                     this.drawRhombus(this.startX, this.startY, width, height);
                 }
-                else if(this.selectedTool === "text"){
+                else if (this.selectedTool === "text") {
                     this.ctx.fillStyle = "rgba(255,255,255)";
                     this.ctx.font = "16px Arial";
                     this.ctx.fillText("Your Text Here", this.startX, this.startY);
