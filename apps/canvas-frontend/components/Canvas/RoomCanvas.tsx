@@ -5,6 +5,7 @@ import { Canvas } from "./Canvas";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
 export function RoomCanvas(
     { roomId }: { roomId: string }
 ) {
