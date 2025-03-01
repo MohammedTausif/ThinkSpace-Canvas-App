@@ -17,6 +17,7 @@ const emailDomains = [
 const Signin = () => {
     const router = useRouter();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const [loading, setLoading] = useState(false)
     const usernameRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null);
     const [signInData, setSignInData] = useState<SigninInput>({
@@ -38,6 +39,7 @@ const Signin = () => {
     // console.log("signin credentials", ValidData)
 
     async function handleSignin() {
+        setLoading(true)
         if (!ValidData.success) {
             const formatErrors = ValidData.error.format();
             setErrors({
@@ -53,11 +55,13 @@ const Signin = () => {
                 password: userData?.password
                 
             })
+            setLoading(false)
             const jwt = response.data.token;
             localStorage.setItem('token', jwt)
             router.push(`/dashboard`)
         }
         catch (error) { 
+            setLoading(false)
             console.error("error is:", error)
         }
     }
@@ -173,7 +177,7 @@ const Signin = () => {
                     </div>
 
                     <Button
-                        className='text-[16px]'
+                        className={`text-[16px] ${loading? "cursor-progress" : ""}`}
                         title='Signin'
                         onClick={handleSignin}
 

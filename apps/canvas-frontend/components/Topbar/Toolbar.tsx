@@ -1,21 +1,24 @@
 import { Baseline, Circle, CircleArrowDown, EraserIcon, Minus, MousePointerClickIcon, MoveDown, Pencil, PencilIcon, RectangleHorizontalIcon, Square, Text, Triangle, TriangleRight } from "lucide-react"
 import { Tool } from "../Canvas/Canvas"
 import { IconModal } from "../ui/Icons"
-import { Plus } from "lucide-react"
+
 interface TopbarProps {
     selectedTool: Tool,
     setSelectedTool: (s: Tool) => void
 }
-export const getCursorStyle = ({selectedTool}: any) => {
-    if (selectedTool === 'pencil') {
-      return 'url("/images/brush_cursor.png") 16 16, auto';
+export const getCursorStyle = ({selectedTool}: TopbarProps) => {
+    if (selectedTool === 'text') {
+      return 'text';
     } else if (selectedTool === 'eraser') {
-      return `${<Plus className="size-3"/>}`
+      return ``
     //    'url("/images/eraser_cursor.png") 16 16, auto';
     } else if (selectedTool === 'rect') {
-      return 'nwse-resize';
-    } else {
-      return 'default';
+      return 'crosshair';
+    } else if (selectedTool === "select"){
+      return 'grab'
+    }
+     else {
+      return 'crosshair';
     }
   };
 
