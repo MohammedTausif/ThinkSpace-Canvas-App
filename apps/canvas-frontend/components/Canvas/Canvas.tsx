@@ -8,7 +8,7 @@ interface CanvasProps{
     socket: WebSocket
 }
 
-export type Tool= "circle" | "rect" | "pencil" | "text" | "eraser"| "select"| "arrow" | "triangle" | "rhombus";
+export type Tool= "circle" | "rect" | "pencil" | "text" | "eraser"| "select"| "arrow" | "triangle" | "rhombus"| "line";
 
 export function Canvas({ roomId, socket }: CanvasProps){
     const canvasRef = useRef<HTMLCanvasElement>(null);

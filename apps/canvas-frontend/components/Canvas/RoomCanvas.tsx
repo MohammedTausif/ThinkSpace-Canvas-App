@@ -66,6 +66,7 @@ export function RoomCanvas(
     }
 
     if(!room){
+
         return <div className="h-screen flex justify-center  items-center text-2xl font-medium  gap-5">No Room Exist
         <br />
             <Link href="/">  <button className="bg-blue-600 text-white cursor-pointer rounded-md p-2">Click here for redirect</button></Link>
