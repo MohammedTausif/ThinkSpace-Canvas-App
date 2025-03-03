@@ -6,7 +6,7 @@ interface TopbarProps {
     selectedTool: Tool,
     setSelectedTool: (s: Tool) => void
 }
-export const getCursorStyle = ({selectedTool}: TopbarProps) => {
+export const getCursorStyle = ({selectedTool}: any) => {
     if (selectedTool === 'text') {
       return 'text';
     } else if (selectedTool === 'eraser') {

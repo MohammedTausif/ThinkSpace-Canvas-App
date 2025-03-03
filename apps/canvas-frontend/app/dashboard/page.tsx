@@ -107,14 +107,15 @@ export default function DashboardPage() {
           <div>
             <button
               onClick={() => setRoomModal(true)}
-              className="inline-flex items-center md:px-4 px-2 lg:px-4  py-1.5 md:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm">
-              <Plus className="w-5 h-5 mr-1" />
-              Create Room
+              className="gap-1 inline-flex items-center text-sm md:px-4 px-2 lg:px-4  py-2  bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 shadow-sm">
+              <Plus className="md:w-5 md:h-5  w-4 h-4" />
+              <span className='hidden md:flex'> Create </span>
+               Room
             </button>
           </div>
         </div>
         {
-          rooms.length == 0 && <div className=' mt-[15%] w-full flex items-center justify-center text-gray-300  text-3xl font-bold gap-2'> No Rooms Exist <ServerOff className='size-6'/></div>
+          rooms.length === 0 && <div className=' mt-[15%] w-full flex items-center justify-center text-gray-300  text-3xl font-bold gap-2'> No Rooms Exist <ServerOff className='size-6'/></div>
         }
         <main
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

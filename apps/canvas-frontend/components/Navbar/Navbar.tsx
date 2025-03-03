@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Layers, Menu, X, ChevronDown, LogIn, UserPlus, Settings, HelpCircle, Bell, Search, Sun, Moon } from "lucide-react";
+import { Layers, Menu, X, ChevronDown, LogIn, UserPlus, Settings, HelpCircle, Bell, Search, Sun, Moon, Github } from "lucide-react";
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -12,7 +12,7 @@ const Navbar = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 50) {
+            if (window.scrollY > 10) {
                 setIsScrolled(true);
             } else {
                 setIsScrolled(false);
@@ -28,8 +28,8 @@ const Navbar = () => {
             className={cn(
                 "sticky top-0 left-0  right-0 z-50 transition-all duration-300 ease-in-out  border-gray-100 border-b-[1px]",
                 isScrolled
-                    ? " sticky  backdrop-blur-sm shadow-sm py-2 md:mr-64 md:ml-64 rounded-2xl border top-5 border-gray-200"
-                    : " py-3  bg-white rounded-2xl"
+                    ? " sticky  backdrop-blur-sm shadow-sm py-2 lg:mr-72 lg:ml-72 md:rounded-2xl border md:top-5 border-gray-200"
+                    : " py-3  bg-white/80  backdrop-blur-lg shadow-sm rounded-2xl"
             )}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-7">
@@ -108,9 +108,14 @@ const Navbar = () => {
                         </Link>
 
                         <button className="p-2 rounded-full  relative">
+                            <Github className="h-5 w-5 text-gray-700" />
+                           </button>
+                           
+                        <button className="p-2 rounded-full  relative">
                             <Sun className="h-5 w-5 text-gray-700" />
                             {/* <Moon className="h-5 w-5 text-gray-600" /> */}
                         </button>
+                        
                     </div>
 
                     {/* Mobile Menu Button */}
