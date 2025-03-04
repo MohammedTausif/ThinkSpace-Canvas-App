@@ -376,6 +376,7 @@ export class Game {
             roomId: this.roomId
         }));
         this.clearCanvas();
+        this.selectedTool= "select"
     };
 
     mouseMoveHandler = (e: any) => {

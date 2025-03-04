@@ -49,7 +49,7 @@ const Navbar = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setIsProductsOpen(!isProductsOpen)}
-                                    className="flex items-center text-gray-800 hover:text-blue-600 transition-colors"
+                                    className="flex items-center text-gray-800 hover:text-blue-600 hover:bg-gray-50 px-3 py-1.5  rounded-full transition-colors"
                                 >
                                     Products
                                     <ChevronDown className={cn(
@@ -73,29 +73,12 @@ const Navbar = () => {
                                 )}
                             </div>
 
-                            {/* <Link href="/pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Pricing
-              </Link>
-              
-              <Link href="/templates" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Templates
-              </Link> */}
-
                             <Link href="/" className="text-gray-800 hover:text-blue-600 transition-colors">
                                 Blog
                             </Link>
                         </div>
                     </div>
 
-                    {/* Search Bar */}
-                    {/* <div className="hidden md:flex items-center relative mx-4 flex-1 max-w-xs">
-            <Search className="absolute left-3 h-4 w-4 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search templates..." 
-              className="pl-10 pr-4 py-2 w-full rounded-full bg-gray-100 border-transparent focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 text-sm"
-            />
-          </div> */}
 
                     {/* Right Side Actions */}
                     <div className="hidden md:flex items-center space-x-4">
@@ -109,13 +92,13 @@ const Navbar = () => {
 
                         <button className="p-2 rounded-full  relative">
                             <Github className="h-5 w-5 text-gray-700" />
-                           </button>
-                           
+                        </button>
+
                         <button className="p-2 rounded-full  relative">
                             <Sun className="h-5 w-5 text-gray-700" />
                             {/* <Moon className="h-5 w-5 text-gray-600" /> */}
                         </button>
-                        
+
                     </div>
 
                     {/* Mobile Menu Button */}
