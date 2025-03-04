@@ -31,13 +31,6 @@ export function Canvas({ roomId, socket }: CanvasProps){
     }
   },[canvasRef])
 
-
-  useEffect(() => {
-    if (canvasRef.current) {
-      canvasRef.current.style.cursor = getCursorStyle({ selectedTool });
-    }
-  }, [selectedTool]);
-
     return <div className=" h-[100vh] overflow-hidden  ">
         <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight} 
         style={{ cursor: getCursorStyle({selectedTool})}}

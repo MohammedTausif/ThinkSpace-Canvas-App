@@ -7,15 +7,8 @@ interface TopbarProps {
     selectedTool: Tool,
     setSelectedTool: (s: Tool) => void
 }
-export const getCursorStyle = ({selectedTool}: any) => {
-    if (selectedTool === 'text') {
-      return 'text';
-    } else if (selectedTool === 'eraser') {
-      return ``
-    //    'url("/images/eraser_cursor.png") 16 16, auto';
-    } else if (selectedTool === 'rect') {
-      return 'crosshair';
-    } else if (selectedTool === "select"){
+export const getCursorStyle = ({selectedTool}: {selectedTool : Tool}) => {
+    if (selectedTool === "select"){
       return 'grab'
     }
      else {
@@ -24,6 +17,13 @@ export const getCursorStyle = ({selectedTool}: any) => {
   };
 
 export default function Topbar({ selectedTool, setSelectedTool }: TopbarProps) {
+  useEffect(() => {
+    document.body.style.cursor = getCursorStyle({ selectedTool });
+    return () => {
+      // Optionally reset the cursor on unmount.
+      document.body.style.cursor = "pointer";
+    }
+  }, [selectedTool]);
   
     return <div className="fixed top-4 left-[50%] right-[50%] p-1  flex justify-center  items-center rounded-lg shadow-2xl">
         <div className="flex justify-center items-center gap-1.5 text-white bg-blue-600 rounded-lg ">
