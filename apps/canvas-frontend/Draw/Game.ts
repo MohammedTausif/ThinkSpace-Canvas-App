@@ -1,40 +1,51 @@
 import { Tool } from "@/components/Canvas/Canvas";
 import getExistingShapes from "./FetchShapes";
 
-
 type Shape = {
+    id?: number,
     type: "rect",
     x: number,
     y: number,
     width: number,
     height: number
 } | {
+    id?: number
     type: "circle";
     centerX: number;
     centerY: number;
     radius: number;
+
 } | {
+    id?: number
     type: "pencil";
     points: { x: number, y: number }[];
+
 } | {
+    id?: number
     type: "text";
     text: string;
     x: number;
     y: number;
+
 } | {
+    id?: number
     type: "arrow";
     startX: number;
     startY: number;
     endX: number;
     endY: number;
+
 } | {
-    type: "rhombus";
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+    id?: number
+        type: "rhombus";
+        x: number;
+        y: number;
+        width: number;
+        height: number;
 } | {
     // TRIANGLE: New triangle shape type.
+    id?: number
+
     type: "triangle";
     topX: number;
     topY: number;
@@ -42,12 +53,15 @@ type Shape = {
     bottomLeftY: number;
     bottomRightX: number;
     bottomRightY: number;
+
 } | {
+    id?: number
     type: "line";
     startX: number;
     startY: number;
     endX: number;
     endY: number;
+
 }
 
 export class Game {
@@ -58,8 +72,10 @@ export class Game {
     private clicked: boolean;
     private startX = 0;
     private startY = 0;
+    // private id?  = Number; 
     private selectedTool: Tool = "select";
     private currentPencilPoints: { x: number, y: number }[] = [];
+    public onShapeDrawn?: () => void;
 
     socket: WebSocket;
 
@@ -79,6 +95,7 @@ export class Game {
         this.socket = socket;
         this.clicked = false;
         this.init();
+        this.initShapes();
         this.initHandlers();
         this.initMouseHandlers();
         this.initPanZoomHandlers();
@@ -95,7 +112,7 @@ export class Game {
 
     private handleZoom = (event: WheelEvent) => {
         //Only zoom if select tool is active.
-        if (this.selectedTool !== "select") return;
+        if (this.selectedTool !== "move") return;
 
         event.preventDefault();
         const zoomSpeed = 0.05;
@@ -113,7 +130,7 @@ export class Game {
 
     private startPan = (event: MouseEvent) => {
         //  Only pan if select tool is active.
-        if (this.selectedTool !== "select") return;
+        if (this.selectedTool !== "move") return;
         else {
             this.isPanning = true;
             this.panStartX = event.clientX - this.offsetX;
@@ -124,7 +141,7 @@ export class Game {
     private panCanvas = (event: MouseEvent) => {
         if (!this.isPanning) return;
         // Only pan if selected tool is active.
-        if (this.selectedTool !== "select") return;
+        if (this.selectedTool !== "move") return;
         this.offsetX = event.clientX - this.panStartX;
         this.offsetY = event.clientY - this.panStartY;
         this.clearCanvas();
@@ -150,6 +167,10 @@ export class Game {
         this.clearCanvas();
     }
 
+    async initShapes(){
+      this.existingShapes = await getExistingShapes(this.roomId)
+    }
+
     initHandlers() {
         this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
@@ -158,7 +179,66 @@ export class Game {
                 this.existingShapes.push(parsedData.shape);
                 this.clearCanvas();
             }
+            else if(data.type === "delete"){
+              const shapeId = data.shapeId;
+              this.existingShapes = this.existingShapes.filter(s=>s.id !== shapeId)
+              this.clearCanvas();
+            }
+            else if(data.type === "update"){
+              const parsedData = JSON.parse(data.message)
+              const {shape, shapeId} = parsedData
+              const idx = this.existingShapes.findIndex(s => s.id === shapeId)
+              if(idx >= 0){
+                this.existingShapes[idx] = shape;
+              }
+              this.clearCanvas();
+            }
         }
+    }
+
+    // get shape details for editing: eraser etc...
+    private hitTest(x: number, y: number): Shape | null {
+      for (let i = this.existingShapes.length - 1; i >= 0; i--) {
+        const shape = this.existingShapes[i];
+        if (shape.type === "rect") {
+          if (x >= shape.x && x <= shape.x + shape.width &&
+              y >= shape.y && y <= shape.y + shape.height) return shape;
+        } else if (shape.type === "circle") {
+          const dx = x - shape.centerX;
+          const dy = y - shape.centerY;
+          if (Math.sqrt(dx * dx + dy * dy) <= shape.radius) return shape;
+        } else if (shape.type === "pencil") {
+          for (let pt of shape.points) {
+            const dx = x - pt.x;
+            const dy = y - pt.y;
+            if (Math.sqrt(dx * dx + dy * dy) <= 5) return shape;
+          }
+        } else if (shape.type === "text") {
+          if (x >= shape.x && x <= shape.x + 100 && y >= shape.y - 16 && y <= shape.y) return shape;
+        } else if (shape.type === "arrow") {
+          const minX = Math.min(shape.startX, shape.endX);
+          const maxX = Math.max(shape.startX, shape.endX);
+          const minY = Math.min(shape.startY, shape.endY);
+          const maxY = Math.max(shape.startY, shape.endY);
+          if (x >= minX && x <= maxX && y >= minY && y <= maxY) return shape;
+        } else if (shape.type === "rhombus") {
+          if (x >= shape.x && x <= shape.x + shape.width &&
+              y >= shape.y && y <= shape.y + shape.height) return shape;
+        } else if (shape.type === "triangle") {
+          const minX = Math.min(shape.topX, shape.bottomLeftX, shape.bottomRightX);
+          const maxX = Math.max(shape.topX, shape.bottomLeftX, shape.bottomRightX);
+          const minY = Math.min(shape.topY, shape.bottomLeftY, shape.bottomRightY);
+          const maxY = Math.max(shape.topY, shape.bottomLeftY, shape.bottomRightY);
+          if (x >= minX && x <= maxX && y >= minY && y <= maxY) return shape;
+        } else if (shape.type === "line") {
+          const minX = Math.min(shape.startX, shape.endX);
+          const maxX = Math.max(shape.startX, shape.endX);
+          const minY = Math.min(shape.startY, shape.endY);
+          const maxY = Math.max(shape.startY, shape.endY);
+          if (x >= minX && x <= maxX && y >= minY && y <= maxY) return shape;
+        }
+      }
+      return null;
     }
 
     clearCanvas() {
@@ -174,7 +254,7 @@ export class Game {
 
         this.existingShapes.forEach((shape) => {
             this.ctx.strokeStyle = "rgba(255,255,255)";
-            if (shape.type == "rect") {
+            if (shape.type === "rect") {
                 this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
             } else if (shape.type === "circle") {
                 this.ctx.beginPath();
@@ -276,8 +356,29 @@ export class Game {
 
     // Always update start coordinates using world coordinates.
     mouseDownHandler = (e: any) => {
-        this.clicked = true;
         const { x, y } = this.getWorldCoordinates(e); // COORD FIX
+        if(this.selectedTool ==="eraser"){
+          this.clearCanvas()
+          const hitShape = this.hitTest(x,y)
+          if(hitShape && hitShape.id !== undefined){
+            console.log("shaped id came")
+            // Remove shape By its Id
+            this.existingShapes = this.existingShapes.filter(s => s.id !== hitShape.id);
+            // Send delete shape message with shape id to websocket server
+            this.socket.send(JSON.stringify({
+              type: "delete",
+              shapeId : hitShape.id,
+              roomId: this.roomId
+            }));
+            this.clearCanvas();
+          } 
+          console.log("shape id:" , hitShape?.id)
+          // if(this.onShapeDrawn){ this.onShapeDrawn() }
+          this.clicked = false;
+          return
+        }
+       // For tools such as pencil etc ..
+        this.clicked = true;
         this.startX = x;
         this.startY = y;
         if (this.selectedTool === "pencil") {
@@ -294,64 +395,68 @@ export class Game {
             const width = x - this.startX;
             const height = y - this.startY;
             shape = {
-                type: "rect",
-                x: this.startX,
-                y: this.startY,
-                width,
-                height
+                    type: "rect",
+                    x: this.startX,
+                    y: this.startY,
+                    width,
+                    height
+                
             };
         } else if (selectedTool === "circle") {
             const width = x - this.startX;
             const height = y - this.startY;
             const radius = Math.max(width, height) / 2;
             shape = {
-                type: "circle",
-                radius,
-                centerX: this.startX + radius,
-                centerY: this.startY + radius,
+                
+                    type: "circle",
+                    radius,
+                    centerX: this.startX + radius,
+                    centerY: this.startY + radius,
+                
             };
         } else if (selectedTool === "pencil") {
             shape = {
-                type: "pencil",
-                points: this.currentPencilPoints
+                    type: "pencil",
+                    points: this.currentPencilPoints
             };
         } else if (selectedTool === "text") {
             const userText = prompt("Enter text:");
             if (userText && userText.trim() !== "") {
                 shape = {
-                    type: "text",
-                    text: userText,
-                    x: this.startX,
-                    y: this.startY
+                        type: "text",
+                        text: userText,
+                        x: this.startX,
+                        y: this.startY
                 };
             }
         } else if (selectedTool === "arrow") {
-            shape = {
-                type: "arrow",
-                startX: this.startX,
-                startY: this.startY,
-                endX: x,
-                endY: y
+            shape = {                
+                    type: "arrow",
+                    startX: this.startX,
+                    startY: this.startY,
+                    endX: x,
+                    endY: y
+                
             };
         } else if (selectedTool === "rhombus") {
             const width = x - this.startX;
             const height = y - this.startY;
             shape = {
-                type: "rhombus",
-                x: this.startX,
-                y: this.startY,
-                width,
-                height
+                    type: "rhombus",
+                    x: this.startX,
+                    y: this.startY,
+                    width,
+                    height
             };
         } else if (selectedTool === "line") {
             shape = {
-                type: "line",
-                startX: this.startX,
-                startY: this.startY,
-                endX: x,
-                endY: y
+                    type: "line",
+                    startX: this.startX,
+                    startY: this.startY,
+                    endX: x,
+                    endY: y
             }
-        }
+            }
         else if (selectedTool === "triangle") {
             // Create triangle using bounding box.
             const boxX = Math.min(this.startX, x);
@@ -359,13 +464,15 @@ export class Game {
             const boxWidth = Math.abs(x - this.startX);
             const boxHeight = Math.abs(y - this.startY);
             shape = {
-                type: "triangle",
-                topX: boxX + boxWidth / 2,
-                topY: boxY,
-                bottomLeftX: boxX,
-                bottomLeftY: boxY + boxHeight,
-                bottomRightX: boxX + boxWidth,
-                bottomRightY: boxY + boxHeight
+                
+                    type: "triangle",
+                    topX: boxX + boxWidth / 2,
+                    topY: boxY,
+                    bottomLeftX: boxX,
+                    bottomLeftY: boxY + boxHeight,
+                    bottomRightX: boxX + boxWidth,
+                    bottomRightY: boxY + boxHeight
+                
             };
         }
         if (!shape) return;
@@ -376,7 +483,13 @@ export class Game {
             roomId: this.roomId
         }));
         this.clearCanvas();
-        this.selectedTool= "select"
+        this.initShapes();
+        
+        
+        if (this.onShapeDrawn) {
+            this.onShapeDrawn();
+        }
+
     };
 
     mouseMoveHandler = (e: any) => {

@@ -8,15 +8,15 @@ export const getChats = async (req: Request, res: Response) => {
     try {
         const roomId = Number(req.params.roomId)
         const messages = await prismaClient.shape.findMany({
-            where: {
-                roomId: roomId
-            },
-            orderBy: {
-                id: "desc"
-            },
-            take: 500
+            where: { roomId},
+            take: 500,
+            select : {
+                id: true,
+                message: true
+            }
+            
         });
-        res.json({
+        res.status(200).json({
             messages
         })
 
@@ -36,9 +36,7 @@ export const deleteShape = async (req: Request, res: Response) => {
     const id = req.body;
     try {
          await prismaClient.shape.delete({
-            where: {
-                id: id
-            }
+            where: { id }
         })
         res.status(200).json({
             message: "Erased successfully",

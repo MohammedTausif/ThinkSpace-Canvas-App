@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { WebSocketServer, WebSocket } from 'ws'
 import { JWT_SECRET } from '@repo/backend-common/config'
 import { prismaClient } from "@repo/db/client"
+import { parse } from 'path'
 
 
 
@@ -72,48 +73,39 @@ wss.on('connection', function connection(ws, request) {
             user.rooms = user?.rooms.filter(x => x === parsedData.room)
         }
 
-        // for chatting / sending messafe
+        // Deleteing Shape Logic
+        if(parsedData.type === "delete"){
+            const roomId = parsedData.roomId;
+            const shapeId = parsedData.shapeId
+            console.log("aari shape id :" , shapeId)
+            try{
+                await prismaClient.shape.delete({
+                    where: {id: Number(shapeId)}
+                });
+                console.log("shape erased with id: ", shapeId);
+
+            }catch(error){
+                console.error("Error Erasing Shape", error)
+            }
+
+            // Broadcast the delete event to all users in the workspace room
+            users.forEach(user=>{
+                if(user.rooms.includes(roomId)){
+                    user.ws.send(JSON.stringify({
+                        type: "delete",
+                        shapeId,
+                        roomId
+                    }))
+                }
+            })
+        }
+
+        // for sending shapes messages
         if (parsedData.type === "chat") {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
-
-            let msgObj = {};
-            try {
-                msgObj = JSON.parse(message);
-            } catch (error) {
-                console.error(error)
-            }
-            if ((msgObj as any).erased && (msgObj as any).shapeId) {
-                const shapeId = (msgObj as any).shapeId;
-                try {
-                    await prismaClient.shape.delete({
-                        where: { id: Number((msgObj as any).shapeId) }
-                    });
-                    console.log("shape erased with id :", shapeId)
-
-                } catch (error) {
-                    console.error("Error Erasing Shape", error)
-                }
-                // Broadcast the erase event to all users in the room
-                users.forEach(user => {
-                    if (user.rooms.includes(roomId)) {
-                        user.ws.send(JSON.stringify({
-                            type: "chat",
-                            message: message,
-                            roomId
-                        }))
-                    }
-                });
-                return
-            }
-
             //for creating shape events
             try {
-                if (!roomId || isNaN(Number(roomId))) {
-                    console.error("Invalid roomId:", roomId);
-                    return; // Stop execution if roomId is invalid 
-                }
-
                 await prismaClient.shape.create({
                     data: {
                         roomId: Number(roomId),
@@ -133,6 +125,32 @@ wss.on('connection', function connection(ws, request) {
                 })
             } catch (error) {
                 console.error("error sending message :", error)
+            }
+
+            if(parsedData.type === "update"){
+                const roomId = parsedData.roomId;
+                const {shape, shapeId} = parsedData;
+                try{
+                    await prismaClient.shape.update({
+                        where: {id: Number(shapeId)},
+                        data : {
+                            message: JSON.stringify(shape)
+                        }
+                    })
+                    console.log("shape updated in DB")
+                    users.forEach(user=> {
+                        if(user.rooms.includes(roomId)){
+                            user.ws.send(JSON.stringify({
+                                type: "update",
+                                message: JSON.stringify({shape, shapeId}),
+                                roomId
+                            }))
+                        }
+                    })
+                } catch(error){
+                    console.error("Error Updating Shape :", error)
+
+                }
             }
         }
     });
