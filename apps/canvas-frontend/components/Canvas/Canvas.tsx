@@ -2,6 +2,8 @@ import { initDraw } from "@/Draw/draw";
 import { useEffect, useRef, useState } from "react";
 import Topbar, { getCursorStyle } from "../Topbar/Toolbar";
 import { Game } from "@/Draw/Game";
+import ShareButton from "../Topbar/Share.Button";
+import Menubar from "../Topbar/Menubar";
 
 interface CanvasProps{
     roomId: string,
@@ -38,11 +40,19 @@ export function Canvas({ roomId, socket }: CanvasProps){
     }
   }, [selectedTool]);
 
+  function Handle(){
+    console.log("clicked")
+    return alert("feature coming soon")
+  }
+
 
     return <div className=" h-[100vh] overflow-hidden  ">
         <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight} 
          ></canvas>
+         <Menubar/>
         <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool}/>
+        <ShareButton onClick={Handle}/>
+
     </div>
 
 }
