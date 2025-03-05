@@ -112,13 +112,13 @@ const Hero = () => {
             </p>
             <div className="flex space-x-6">
               <Link
-                href="https://github.com"
+                href={'https://github.com/MohammedTausif/ThinkSpace-Canvas-App.git'}
                 target="_blank"
                 className="text-muted-foreground hover:text-primary"
               >
                 <Github className="h-5 w-5" />
               </Link>
-              <Link href="" className="text-muted-foreground hover:text-primary">
+              <Link href={'https://www.linkedin.com/in/tausif-ahmed-01a416253/'} target="_blank" className="text-muted-foreground hover:text-primary">
                 <Linkedin className="h-5 w-5" />
               </Link>
             </div>

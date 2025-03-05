@@ -35,7 +35,7 @@ export default function DashboardPage() {
     router.push(`canvas/${roomId}`)
   }
 
-  function Logout() {
+   function Logout() {
     const token = localStorage.getItem('token')
     try {
       localStorage.removeItem('token')
