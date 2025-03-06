@@ -1,20 +1,20 @@
 import { useRouter } from 'next/navigation'
 import { Github, HelpCircle, LayoutDashboard, LogOut, Moon, Sun, Trash, Trash2, Twitter, User, Users } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
+import collabLink from '../Canvas Features/Collab.Link'
 
 
 interface MenuPageProps {
     isOpen: boolean
-    onclose: () => void
+    onclose?: () => void
+    resetCanvas: ()=> void
 }
 
-export default function Menubar({ isOpen, onclose }: MenuPageProps) {
+export default function Menubar({ isOpen, onclose , resetCanvas}: MenuPageProps) {
+  
     const router = useRouter()
 
-    function handleClose() {
-        onclose()
-    }
     function Logout() {
         try {
             localStorage.removeItem('token')
@@ -30,8 +30,8 @@ export default function Menubar({ isOpen, onclose }: MenuPageProps) {
             <div className='grid px-4 py-3'>
                 <ul className='text-white text-sm  '>
                     <Link href={'/dashboard'} className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded'> <LayoutDashboard className='size-4 ' />Back to Dashboard</Link>
-                    <li className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded'><Users className='size-4' />Live Collaboration</li>
-                    <li className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded'> <Trash2 className='size-4' />Reset Canvas</li>
+                    <li className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded' ><Users className='size-4' />Live Collaboration</li>
+                    <li className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded' onClick={resetCanvas}> <Trash2 className='size-4' />Reset Canvas</li>
                     <li className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded'> <User className='size-4' />Account</li>
                     <li className='flex items-center gap-1 cursor-help   hover:bg-gray-700 p-3 rounded'><HelpCircle className='size-4 text-white' /> Help</li>
                 </ul>

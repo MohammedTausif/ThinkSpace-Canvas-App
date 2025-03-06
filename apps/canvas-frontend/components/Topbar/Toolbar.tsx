@@ -12,10 +12,10 @@ export const getCursorStyle = ({selectedTool}: {selectedTool : Tool}) => {
       return 'grab'
     }
     if (selectedTool === "select"){
-      return ''
+      return 'url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/9632/heart.svg), auto;'
     }
      else {
-      return 'crosshair';
+      return 'cell';
     }
   };
 
@@ -23,6 +23,7 @@ export default function Topbar({ selectedTool, setSelectedTool }: TopbarProps) {
   
     return <div className="fixed top-4 left-[50%] right-[50%] p-1  flex justify-center  items-center rounded-lg shadow-2xl">
         <div className="flex justify-center items-center gap-1.5 text-white bg-blue-600 rounded-lg ">
+          <IconModal icon={<Hand   className={` rotate-45 ${selectedTool === "move"? "text-black": ""}`}/>}  onClick={()=>setSelectedTool("move")}  />
           <IconModal icon={<Pencil className={`${selectedTool === "pencil"? "text-black": ""}`}/>} onClick={()=>setSelectedTool("pencil")} /> 
           <IconModal icon={<RectangleHorizontalIcon  className={`${selectedTool === "rect"? "text-black": ""}`}/>} onClick={()=> setSelectedTool("rect")} />
           <IconModal icon={<Triangle  className={`${selectedTool === "triangle"? "text-black": ""}`}/>} onClick={()=> setSelectedTool("triangle")} />
@@ -33,7 +34,6 @@ export default function Topbar({ selectedTool, setSelectedTool }: TopbarProps) {
           <IconModal icon={<Minus  className={`${selectedTool === "line"? "text-black": ""}`}/>} onClick={()=>setSelectedTool("line")}  />
           <IconModal icon={<MoveDown  className={`${selectedTool === "arrow"? "text-black": ""}`}/>} onClick={()=>setSelectedTool("arrow")}  />
           <IconModal icon={<Square   className={` rotate-45 ${selectedTool === "rhombus"? "text-black": ""}`}/>}  onClick={()=>setSelectedTool("rhombus")}  />
-          <IconModal icon={<Hand   className={` rotate-45 ${selectedTool === "move"? "text-black": ""}`}/>}  onClick={()=>setSelectedTool("move")}  />
         </div>
     </div>
 }

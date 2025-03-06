@@ -3,7 +3,6 @@ import * as React from 'react'
 interface ButtonProps
 extends React.ButtonHTMLAttributes<HTMLButtonElement>
 {
-
 }
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
  ({title, className, onClick} , ref)=>{

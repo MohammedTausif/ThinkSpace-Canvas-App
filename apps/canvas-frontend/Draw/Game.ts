@@ -359,6 +359,7 @@ export class Game {
         const { x, y } = this.getWorldCoordinates(e); // COORD FIX
         if(this.selectedTool ==="eraser"){
           this.clearCanvas()
+          this.initShapes()
           const hitShape = this.hitTest(x,y)
           if(hitShape && hitShape.id !== undefined){
             console.log("shaped id came")

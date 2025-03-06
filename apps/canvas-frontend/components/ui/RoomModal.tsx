@@ -12,7 +12,6 @@ interface CreateRoomModalProps {
     onClose?: () => void;
 }
 export default function CreateRoomModal({ isOpen, onClose }: CreateRoomModalProps) {
-    const router = useRouter()
     const [error, setError] = useState<Record<string, string>>({})
     const [newRoomTitle, setNewRoomTitle] = useState<CreateRoomInput>({
         name: ""

@@ -4,6 +4,7 @@ import { Game } from "@/Draw/Game";
 import ShareButton from "../Topbar/Share.Button";
 import MenuButton from "../ui/MenuButton";
 import Menubar from "../Topbar/Menubar";
+import ResetForm from "../ui/Reset.Form";
 
 interface CanvasProps {
   roomId: string,
@@ -17,7 +18,7 @@ export function Canvas({ roomId, socket }: CanvasProps) {
   const [game, setGame] = useState<Game>();
   const [selectedTool, setSelectedTool] = useState<Tool>("move")
   const [modalOpen, setModalOpen] = useState(false)
-
+  const [resetCanvas, setResetCanvas]= useState(false)
 
   useEffect(() => {
     game?.setTool(selectedTool)
@@ -41,7 +42,7 @@ export function Canvas({ roomId, socket }: CanvasProps) {
     }
   }, [selectedTool]);
 
-  function Handle() {
+  function HandleShare() {
     console.log("clicked")
 
     return alert("feature coming soon")
@@ -50,10 +51,11 @@ export function Canvas({ roomId, socket }: CanvasProps) {
 
   return <div className=" h-[100vh] overflow-hidden  ">
     <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
-    <Menubar isOpen={modalOpen} onclose={() => setModalOpen(!modalOpen)} />
+    <ResetForm isOpen={resetCanvas} onClose={()=>setResetCanvas(!resetCanvas)} />
     <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
-    <MenuButton onClick={() => setModalOpen(!modalOpen)} />
-    <ShareButton onClick={Handle} />
+    <Menubar isOpen={modalOpen} onclose={() => setModalOpen(!modalOpen)} resetCanvas={()=> setResetCanvas(!resetCanvas)} />
+    <MenuButton onClick={()=>setModalOpen(!modalOpen)} isOpen={modalOpen} />
+    <ShareButton onClick={HandleShare} />
 
   </div>
 
