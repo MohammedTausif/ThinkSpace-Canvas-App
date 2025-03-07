@@ -26,7 +26,7 @@ export default function Menubar({ isOpen, onclose , resetCanvas}: MenuPageProps)
 
     return <div>
         <div className={`fixed top-[7%]  h-[60%vh] md:h-[] w-60 bg-[#232329] shadow rounded-[8px] transform transition-transform duration-300 ${isOpen ? 'translate-x-1 left-[1%]' : '-translate-x-full'}`}>
-            {/* <button className='w-full flex justify-end p-2 text-xs cursor-pointer  text-white' onClick={handleClose}> X </button> */}
+
             <div className='grid px-4 py-3'>
                 <ul className='text-white text-sm  '>
                     <Link href={'/dashboard'} className='flex items-center gap-1 cursor-pointer hover:bg-gray-700 p-3 rounded'> <LayoutDashboard className='size-4 ' />Back to Dashboard</Link>
@@ -45,6 +45,7 @@ export default function Menubar({ isOpen, onclose , resetCanvas}: MenuPageProps)
 
                 </ul>
                 <div className='border-[0.5px] border-t-0 border-gray-500 mt-2'></div>
+                
                 <div className='flex px-3 py-1.5 gap-4 text-white text-sm w-full   rounded'>
                     <h1 className='flex items-center  rounded'>Theme</h1>
                     <div className='flex justify-around items-center border-[0.5px] border-gray-500 rounded h-10 w-24'>
