@@ -51,7 +51,7 @@ export function Canvas({ roomId, socket }: CanvasProps) {
 
   return <div className=" h-[100vh] overflow-hidden  ">
     <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
-    <ResetForm isOpen={resetCanvas} onClose={()=>setResetCanvas(!resetCanvas)} />
+    <ResetForm isOpen={resetCanvas} onClose={()=>setResetCanvas(!resetCanvas)} roomId={roomId} />
     <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
     <Menubar isOpen={modalOpen} onclose={() => setModalOpen(!modalOpen)} resetCanvas={()=> setResetCanvas(!resetCanvas)} />
     <MenuButton onClick={()=>setModalOpen(!modalOpen)} isOpen={modalOpen} />

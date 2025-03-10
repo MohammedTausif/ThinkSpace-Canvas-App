@@ -1,12 +1,15 @@
+import { HTTP_URL } from "@/config";
 import { Button } from "@repo/ui/button";
 import axios from "axios";
 interface ResetFormProps{
     isOpen: boolean,
-    onClose: ()=> void
+    onClose: ()=> void,
+    roomId : string
 }
 
-export default function ResetForm({ isOpen, onClose }: ResetFormProps) {
-    function ResetCanvas() {
+export default function ResetForm({ isOpen, onClose, roomId }: ResetFormProps) {
+    function ResetCanvas(id : string) {
+        axios.delete(`${HTTP_URL}/api/v1/shapes/delete`)
         
         onClose()
     }
@@ -37,7 +40,7 @@ export default function ResetForm({ isOpen, onClose }: ResetFormProps) {
                         className="bg-blue-600 text-white rounded-sm py-3 px-6 text-sm w-full md:w-auto hover:bg-blue-700"
                         children="Continue"
                         variant="secondary"
-                        onClick={ResetCanvas}
+                        onClick={()=>ResetCanvas(roomId)}
                         size="lg"
                     />
                 </div>
