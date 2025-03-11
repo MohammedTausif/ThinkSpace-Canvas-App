@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { Github, HelpCircle, LayoutDashboard, LogOut, Moon, Sun, Trash, Trash2, Twitter, User, Users } from 'lucide-react'
+import { Github, HelpCircle, LayoutDashboard, LogOut, Menu, Moon, Sun, Trash, Trash2, Twitter, User, Users, X } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import collabLink from '../Canvas Features/Collab.Link'
@@ -24,7 +24,21 @@ export default function Menubar({ isOpen, onclose , resetCanvas}: MenuPageProps)
         }
     }
 
-    return <div>
+    return <>
+    {/* Button for opening and closing Menu */}
+     <div>
+      <button className=" bg-transparent absolute top-5 left-4 transform transition-all duration-300" onClick={onclose}>
+        {
+          isOpen && <X className="text-white size-5 cursor-pointer" />
+        }
+        {
+          !isOpen && <Menu className="text-white size-5 cursor-pointer" />
+        }
+      </button>
+
+    </div>
+    
+    {/* Menu links */}
         <div className={`fixed top-[7%]  h-[60%vh] md:h-[] w-60 bg-[#232329] shadow rounded-[8px] transform transition-transform duration-300 ${isOpen ? 'translate-x-1 left-[1%]' : '-translate-x-full'}`}>
 
             <div className='grid px-4 py-3'>
@@ -58,7 +72,7 @@ export default function Menubar({ isOpen, onclose , resetCanvas}: MenuPageProps)
 
             </div>
         </div>
-    </div>
+    </>
 
 }
 

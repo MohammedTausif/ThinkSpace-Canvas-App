@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Topbar, { getCursorStyle } from "../Topbar/Toolbar";
 import { Game } from "@/Draw/Game";
 import ShareButton from "../Topbar/Share.Button";
-import MenuButton from "../ui/MenuButton";
 import Menubar from "../Topbar/Menubar";
 import ResetForm from "../ui/Reset.Form";
 
@@ -54,7 +53,6 @@ export function Canvas({ roomId, socket }: CanvasProps) {
     <ResetForm isOpen={resetCanvas} onClose={()=>setResetCanvas(!resetCanvas)} roomId={roomId} />
     <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
     <Menubar isOpen={modalOpen} onclose={() => setModalOpen(!modalOpen)} resetCanvas={()=> setResetCanvas(!resetCanvas)} />
-    <MenuButton onClick={()=>setModalOpen(!modalOpen)} isOpen={modalOpen} />
     <ShareButton onClick={HandleShare} />
 
   </div>
