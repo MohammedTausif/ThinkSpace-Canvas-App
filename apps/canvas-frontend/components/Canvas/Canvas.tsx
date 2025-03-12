@@ -54,7 +54,5 @@ export function Canvas({ roomId, socket }: CanvasProps) {
     <canvas className="flex justify-center " ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
     <Menubar isOpen={modalOpen} onclose={() => setModalOpen(!modalOpen)} resetCanvas={()=> setResetCanvas(!resetCanvas)} />
     <ShareButton onClick={HandleShare} />
-
   </div>
-
 }
