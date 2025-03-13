@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { Button } from '@repo/ui/button'
-import { Card } from '@repo/ui/card'
-import { Pencil, Share2, Users2, Sparkles, Github, Download, Linkedin, ChevronRight } from "lucide-react";
+import { Github, ChevronRight } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -19,15 +18,15 @@ const Hero = () => {
               No sign-up required.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-                <Link href={"/signin"}>
-              <Button variant={"primary"} size="lg" className="h-12 px-6 flex  justify-center items-center rounded-full outline-none text-white font-semibold text-sm">
+              <Link href={"/signin"}>
+                <Button variant={"primary"} size="lg" className="h-12 px-6 flex  justify-center items-center rounded-full outline-none text-white font-semibold text-sm">
                   Get Started  <ChevronRight className="ml-1 h-4 w-4 " />
-              </Button>
-                </Link>
+                </Button>
+              </Link>
               <Link href="/signup">
                 <Button variant="outline" size="lg" className="flex justify-center items-center font-semibold text-sm h-12 px-6  rounded-full bg-transparent border border-gray-200 hover:bg-gray-100">
                   Star on GitHub
-                  <Github className="ml-2 h-4 w-4"/>
+                  <Github className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
